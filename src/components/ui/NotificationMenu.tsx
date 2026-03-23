@@ -57,8 +57,8 @@ export function NotificationMenu() {
             <button
                 onClick={() => setIsOpen(!isOpen)}
                 className={`p-2.5 rounded-full transition-colors ${isOpen
-                        ? "bg-zinc-100 dark:bg-zinc-800 text-purple-600 dark:text-purple-400"
-                        : "text-zinc-500 hover:bg-zinc-100 dark:text-zinc-400 dark:hover:bg-zinc-800"
+                    ? "bg-zinc-100 dark:bg-zinc-800 text-purple-600 dark:text-purple-400"
+                    : "text-zinc-500 hover:bg-zinc-100 dark:text-zinc-400 dark:hover:bg-zinc-800"
                     }`}
             >
                 {hasUnread ? <BellDot size={20} /> : <Bell size={20} />}
@@ -66,7 +66,7 @@ export function NotificationMenu() {
 
             {/* Dropdown Menu */}
             {isOpen && (
-                <div className="absolute right-0 top-full mt-2 w-80 md:w-96 bg-white dark:bg-zinc-950 border border-zinc-100 dark:border-zinc-800 rounded-2xl shadow-xl z-50 overflow-hidden flex flex-col transform opacity-100 scale-100 transition-all origin-top-right">
+                <div className="absolute max-md:-right-[69px] md:right-0 top-full mt-2 max-md:w-[calc(100vw-24px)] md:w-96 bg-white dark:bg-zinc-950 border border-zinc-100 dark:border-zinc-800 rounded-2xl shadow-xl z-100 overflow-hidden flex flex-col transform opacity-100 scale-100 transition-all origin-top-right">
 
                     {/* Header của Menu */}
                     <div className="flex items-center justify-between p-4 border-b border-zinc-50 dark:border-zinc-800/50">
@@ -93,7 +93,7 @@ export function NotificationMenu() {
                                             }`}
                                     >
                                         {/* Chấm xanh hiển thị trạng thái chưa đọc */}
-                                        <div className="mt-1.5 w-2 h-2 rounded-full flex-shrink-0">
+                                        <div className="mt-1.5 w-2 h-2 rounded-full shrink-0">
                                             {notif.unread && <div className="w-full h-full bg-purple-600 rounded-full" />}
                                         </div>
 

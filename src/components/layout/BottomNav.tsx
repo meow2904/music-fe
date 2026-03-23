@@ -22,7 +22,7 @@ export function BottomNav() {
     }, []);
 
     return (
-        <nav className="fixed bottom-0 left-0 right-0 h-16 bg-[#0A0A0A]/90 backdrop-blur-lg border-t border-zinc-800 flex items-center justify-around z-50 px-2 pb-safe" suppressHydrationWarning>
+        <nav className="fixed bottom-0 left-0 right-0 h-12 bg-[#0A0A0A]/90 backdrop-blur-lg border-t border-zinc-800 flex items-center justify-around z-50 px-2 pb-safe" suppressHydrationWarning>
             {navItems.map((item) => {
                 const isActive = mounted ? pathname === item.href : false;
                 const Icon = item.icon;
