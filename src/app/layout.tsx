@@ -17,6 +17,9 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Sonic Music",
   description: "Listen to music with Sonic Music",
+  icons: {
+    icon: "/disc-3.svg",
+  },
 };
 
 export default function RootLayout({

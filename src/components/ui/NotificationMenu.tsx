@@ -66,7 +66,7 @@ export function NotificationMenu() {
 
             {/* Dropdown Menu */}
             {isOpen && (
-                <div className="absolute max-md:-right-[69px] md:right-0 top-full mt-2 max-md:w-[calc(100vw-24px)] md:w-96 bg-white dark:bg-zinc-950 border border-zinc-100 dark:border-zinc-800 rounded-2xl shadow-xl z-100 overflow-hidden flex flex-col transform opacity-100 scale-100 transition-all origin-top-right">
+                <div className="absolute right-0 md:top-full top-auto max-md:fixed max-md:top-[60px] max-md:left-4 max-md:right-4 max-md:w-auto mt-2 md:w-96 bg-white dark:bg-zinc-950 border border-zinc-100 dark:border-zinc-800 rounded-2xl shadow-xl z-[100] overflow-hidden flex flex-col transform opacity-100 scale-100 transition-all max-md:origin-top md:origin-top-right">
 
                     {/* Header của Menu */}
                     <div className="flex items-center justify-between p-4 border-b border-zinc-50 dark:border-zinc-800/50">
