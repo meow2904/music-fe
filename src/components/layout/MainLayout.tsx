@@ -44,7 +44,7 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
     if (!mounted) return null;
 
     return (
-        <div className="flex h-dvh w-full overflow-hidden relative bg-white dark:bg-zinc-950">
+        <div className="flex h-dvh w-full overflow-hidden relative bg-background text-foreground transition-colors duration-300">
             {/* 1. SIDEBAR on the left */}
             <div className={cn(
                 "hidden sm:block z-40 shrink-0 transition-all duration-300",
