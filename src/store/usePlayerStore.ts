@@ -10,17 +10,30 @@ interface Track {
 
 interface PlayerState {
   currentTrack: Track | null;
+  queue: Track[];
   isPlaying: boolean;
   volume: number;
   duration: number;
   currentTime: number;
   seekTo: number | null;
+  index: number;       // Vị trí bài hiện tại trong queue
+  isAutoplay: boolean; // Trạng thái bật/tắt tự động tìm bài tương tự
+
+  mode: 'private' | 'room';
+  roomId: string | null;
+
   // Actions
   setCurrentTrack: (track: Track, autoPlay?: boolean) => void;
   setPlaying: (playing: boolean) => void;
   setVolume: (volume: number) => void;
   setProgress: (current: number, total: number) => void;
   setSeekTo: (time: number | null) => void;
+  addToQueue: (queue: Track[]) => void;
+  nextTrack: () => void;
+  prevTrack: () => void;
+  fetchRelatedYouTubeTrack: (videoId: string) => Promise<Track | null>;
+  setMode: (mode: 'private' | 'room', roomId?: string | null) => void;
+  syncRoomState: (data: Partial<PlayerState>) => void; // Hàm nhận lệnh từ Socket
 }
 
 export const usePlayerStore = create<PlayerState>((set) => ({
@@ -30,10 +43,61 @@ export const usePlayerStore = create<PlayerState>((set) => ({
   duration: 0,
   currentTime: 0,
   seekTo: null,
+  queue: [],
+  index: 0,
+  isAutoplay: true,
+
+  mode: 'private',
+  roomId: null,
 
   setCurrentTrack: (track, autoPlay = true) => set({ currentTrack: track, isPlaying: autoPlay }),
   setPlaying: (playing) => set({ isPlaying: playing }),
   setVolume: (volume) => set({ volume }),
   setProgress: (current, total) => set({ currentTime: current, duration: total }),
   setSeekTo: (time) => set({ seekTo: time }),
+  addToQueue: (tracks) => set((state) => ({ queue: [...state.queue, ...tracks] })),
+  nextTrack: () => set((state) => {
+    const next = state.queue[0];
+    if (!next) return { isPlaying: false };
+    return { currentTrack: next, queue: state.queue.slice(1) };
+  }),
+  prevTrack: () => set((state) => {
+    const prev = state.queue[state.queue.length - 1];
+    if (!prev) return { isPlaying: false };
+    return { currentTrack: prev, queue: state.queue.slice(0, -1) };
+  }),
+  fetchRelatedYouTubeTrack: async (videoId: string) => {
+    try {
+      const res = await fetch(`/api/youtube/related?videoId=${videoId}`);
+      if (!res.ok) return null;
+      const data = await res.json();
+      if (!data.items || data.items.length === 0) return null;
+
+      const item = data.items[0];
+      const nextVideoId = typeof item.id === 'string' ? item.id : item.id.videoId;
+      const snippet = item.snippet;
+
+      return {
+        id: nextVideoId,
+        title: snippet.title,
+        artist: snippet.channelTitle,
+        thumbnail: snippet.thumbnails.high.url,
+      };
+    } catch (error) {
+      console.error("Error fetching related track:", error);
+      return null;
+    }
+  },
+  setMode: (mode, roomId = null) => {
+    set({
+      mode,
+      roomId,
+      // Optional: Nếu vào phòng online, tắt autoplay nội bộ đi để Server quyết định
+      isAutoplay: mode === 'room' ? false : true
+    });
+  },
+
+  // 3. HÀM ĐỒNG BỘ TỪ SERVER
+  // Bất cứ khi nào Socket nhận được tin nhắn từ Server, ta ném data vào hàm này
+  syncRoomState: (data) => set((state) => ({ ...state, ...data })),
 }));

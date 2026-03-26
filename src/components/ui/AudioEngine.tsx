@@ -17,6 +17,13 @@ export const AudioEngine = () => {
 
     const playerRef = useRef<any>(null);
 
+    const queue = usePlayerStore(state => state.queue);
+    const index = usePlayerStore(state => state.index);
+    const isAutoplay = usePlayerStore(state => state.isAutoplay);
+    const playNext = usePlayerStore(state => state.nextTrack);
+    const addToQueue = usePlayerStore(state => state.addToQueue);
+    const fetchRelatedYouTubeTrack = usePlayerStore(state => state.fetchRelatedYouTubeTrack);
+
     // Đồng bộ âm lượng và trạng thái Play/Pause từ Store xuống YouTube Player
     useEffect(() => {
         if (!playerRef.current) return;
@@ -41,7 +48,7 @@ export const AudioEngine = () => {
         if (isPlaying) playerRef.current.playVideo();
     };
 
-    const onStateChange = (event: any) => {
+    const onStateChange = async (event: any) => {
         // 1: Playing, 2: Paused, 0: Ended, 3: Buffering
         if (event.data === 1) {
             setPlaying(true);
@@ -51,11 +58,25 @@ export const AudioEngine = () => {
                     setProgress(playerRef.current.getCurrentTime(), playerRef.current.getDuration());
                 }
             }, 1000);
-        } else if (event.data === 2 || event.data === 0) {
+        } else if (event.data === 2) {
             setPlaying(false);
             if (intervalRef.current) {
                 clearInterval(intervalRef.current);
                 intervalRef.current = null;
+            }
+        } else if (event.data === 0) {
+            // event.data === 0 là trạng thái bài hát kết thúc (Ended)
+            if (event.data === 0) {
+                if (queue.length > 0 && queue.length > index) {
+                    playNext(); // Phát bài tiếp theo có sẵn trong danh sách
+                } else if (isAutoplay && currentTrack) {
+                    // Logic tự động tìm bài tương tự
+                    const nextRelatedTrack = await fetchRelatedYouTubeTrack(currentTrack.id);
+                    if (nextRelatedTrack) {
+                        addToQueue([nextRelatedTrack]);
+                        playNext();
+                    }
+                }
             }
         }
     };

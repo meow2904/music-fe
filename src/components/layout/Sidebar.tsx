@@ -2,26 +2,28 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Compass, Radio, LibraryBig, ListMusic, Heart, Users, UserPlus, Menu } from "lucide-react";
+import { Heart, UserPlus, Menu, Music2, Globe2, Radio } from "lucide-react";
 import { cn } from "@/utils/cn";
 
 const menuItems = [
     {
-        group: "MENU", items: [
-            { name: "Explore", href: "/", icon: Compass },
-            { name: "Radio", href: "/radio", icon: Radio },
+        group: "LIBRARY",
+        items: [
+            { name: "Playlists", href: "/playlists", icon: Music2 },
+            { name: "Liked Songs", href: "/liked", icon: Heart },
         ]
     },
     {
-        group: "LIBRARY", items: [
-            { name: "Library", href: "/library", icon: LibraryBig },
-            { name: "Playlists", href: "/playlists", icon: ListMusic },
-            { name: "Liked", href: "/liked", icon: Heart },
+        group: "ROOMS",
+        items: [
+            { name: "My Music Room", href: "/myroom", icon: Radio },
+            { name: "Online Rooms", href: "/online", icon: Globe2 },
         ]
     },
     {
-        group: "PEOPLE", items: [
-            { name: "Find Friends", href: "/friends", icon: Users },
+        group: "PEOPLE",
+        items: [
+            { name: "Find Friends", href: "/friends", icon: UserPlus },
         ]
     }
 ];

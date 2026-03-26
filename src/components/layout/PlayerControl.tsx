@@ -1,7 +1,6 @@
 "use client";
 
 import { Shuffle, SkipBack, Play, Pause, SkipForward, Repeat, MessageSquare, Volume2, ListMusic, Heart } from "lucide-react";
-import Image from "next/image";
 import { cn } from "@/utils/cn";
 import { usePlayerStore } from "@/store/usePlayerStore";
 
@@ -77,14 +76,14 @@ export function PlayerControl() {
 
                 <div className="flex items-center gap-3 w-full text-[10px] font-bold text-zinc-500 dark:text-zinc-400 tabular-nums">
                     <span className="w-8 text-right">{formatTime(currentTime)}</span>
-                    <Slider 
-                        value={currentTime} 
-                        max={duration} 
+                    <Slider
+                        value={currentTime}
+                        max={duration}
                         onChange={(val) => {
                             setProgress(val, duration); // Cập nhật hình ảnh thanh UI ngay lập tức
                             usePlayerStore.getState().setSeekTo(val); // Báo cho Youtube Player tua nhạc
                         }}
-                        className="h-1.5" 
+                        className="h-1.5"
                     />
                     <span className="w-8">{formatTime(duration)}</span>
                 </div>

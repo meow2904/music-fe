@@ -1,35 +1,37 @@
 "use client";
 
-import { Search, History, Trash2, X, ArrowLeft } from "lucide-react";
+import { Search, History, Trash2, X, ArrowLeft, Music2 } from "lucide-react";
 import { cn } from "@/utils/cn";
-import { InputHTMLAttributes, useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect } from "react";
+import useDebounce from "@/hooks/useDebounce";
+import useSWR from "swr";
+import { useRouter } from "next/navigation"; // Lưu ý: dùng next/navigation cho App Router
 
-// Dữ liệu mẫu cho lịch sử tìm kiếm
-const MOCK_HISTORY = [
-    { id: 1, text: "vở kịch của em karaoke" },
-    { id: 2, text: "midnight pulse vol 4" },
-    { id: 3, text: "lofi chill không lời" },
-];
-
-interface SearchInputProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'value' | 'onChange'> {
-    containerClassName?: string;
+interface SearchHistoryItem {
+    id: number;
+    text: string;
+    timestamp: number;
 }
 
-export function SearchInput({ containerClassName, className, ...props }: SearchInputProps) {
+export function SearchInput({ containerClassName, className, ...props }: any) {
     const [query, setQuery] = useState("");
+    const debouncedSearch = useDebounce(query, 300);
     const [isFocused, setIsFocused] = useState(false);
-    const [history, setHistory] = useState(MOCK_HISTORY);
-    const [isMobileOpen, setIsMobileOpen] = useState(false); // Trạng thái mở riêng cho mobile
+    const [isMobileOpen, setIsMobileOpen] = useState(false);
 
     const containerRef = useRef<HTMLDivElement>(null);
     const inputRef = useRef<HTMLInputElement>(null);
+    const router = useRouter();
 
-    // Xử lý click ra ngoài
+    const { data: suggestions } = useSWR(
+        debouncedSearch.trim() ? `/api/youtube/suggestions?q=${encodeURIComponent(debouncedSearch.trim())}` : null,
+        (url) => fetch(url).then(res => res.json())
+    );
+
     useEffect(() => {
         function handleClickOutside(event: MouseEvent) {
             if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
                 setIsFocused(false);
-                // Nếu click ra ngoài ở mobile thì có thể tự động đóng (tuỳ chọn)
                 setIsMobileOpen(false);
             }
         }
@@ -37,124 +39,149 @@ export function SearchInput({ containerClassName, className, ...props }: SearchI
         return () => document.removeEventListener("mousedown", handleClickOutside);
     }, []);
 
-    // Focus vào input khi mở trên bản mobile
-    useEffect(() => {
-        if (isMobileOpen && inputRef.current) {
-            inputRef.current.focus();
-        }
-    }, [isMobileOpen]);
+    const { data: history = [], mutate: mutateHistory } = useSWR<SearchHistoryItem[]>("search_history", null, { fallbackData: [] });
+
+    const addToHistory = (text: string) => {
+        const trimmed = text.trim();
+        if (!trimmed) return;
+
+        mutateHistory(prev => {
+            const current = prev || [];
+            // Xoá trùng & giữ tối đa 10 cái
+            const filtered = current.filter(item => item.text.toLowerCase() !== trimmed.toLowerCase());
+            const updated = [{ id: Date.now(), text: trimmed, timestamp: Date.now() }, ...filtered].slice(0, 10);
+            return updated;
+        }, false); // false để chỉ update UI, không fetch lại
+    };
 
     const handleDeleteHistory = (e: React.MouseEvent, id: number) => {
         e.stopPropagation();
-        setHistory(history.filter(item => item.id !== id));
+        mutateHistory(prev => {
+            const current = prev || [];
+            const updated = current.filter(item => item.id !== id);
+            return updated;
+        }, false);
     };
 
-    const handleSelectHistory = (text: string) => {
-        setQuery(text);
+    const handleSelectTrack = (track: any) => {
+        setQuery(track.title);
+        addToHistory(track.title);
         setIsFocused(false);
         setIsMobileOpen(false);
+        router.push(`/search?q=${encodeURIComponent(track.title)}`);
     };
 
-    const showDropdown = isFocused && history.length > 0;
+    const handleSearch = (e: React.FormEvent) => {
+        e.preventDefault();
+        if (!query.trim()) return;
+        addToHistory(query);
+        router.push(`/search?q=${encodeURIComponent(query)}`);
+        setIsFocused(false);
+    };
 
+    const showSuggestions = isFocused && query.length > 0 && suggestions?.length > 0;
+    const showHistory = isFocused && query.length === 0 && history.length > 0;
+    const showDropdown = showSuggestions || showHistory;
+
+    useEffect(() => {
+        if (suggestions && suggestions.length > 0) {
+            console.log("--- Danh sách Suggestion mới ---");
+            console.log(suggestions); // Dùng console.table để nhìn dạng bảng cho đẹp
+        }
+    }, [suggestions]);
     return (
         <>
-            {/* ====== MOBILE: NÚT TÌM KIẾM (CHỈ HIỆN KHI CHƯA MỞ) ====== */}
             {!isMobileOpen && (
-                <button
-                    onClick={() => setIsMobileOpen(true)}
-                    className="md:hidden p-2.5 rounded-full text-zinc-500 hover:bg-zinc-100 dark:text-zinc-400 dark:hover:bg-zinc-800 transition"
-                >
+                <button onClick={() => setIsMobileOpen(true)} className="md:hidden p-2.5 rounded-full text-zinc-500 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition">
                     <Search size={20} />
                 </button>
             )}
 
-            {/* ====== KHUNG TÌM KIẾM (MỞ RỘNG TRÊN MOBILE HOẶC LUÔN HIỆN TRÊN DESKTOP) ====== */}
-            <div
-                ref={containerRef}
-                className={cn(
-                    "transition-all z-50",
-                    // MOBILE: Ở trạng thái mở, cho z-index thật cao, chiếm full vị trí phía trên
-                    isMobileOpen
-                        ? "absolute inset-x-0 top-0 h-full px-4 flex items-center bg-white/95 dark:bg-zinc-950/95 backdrop-blur-md border-b border-zinc-100 dark:border-zinc-800 max-md:z-100"
-                        : "hidden md:block w-full max-w-sm lg:max-w-lg", // Ẩn trên mobile nếu chưa ấn nút
-                    containerClassName
-                )}
-            >
+            <div ref={containerRef} className={cn(
+                "transition-all z-50",
+                isMobileOpen ? "fixed inset-0 h-16 px-4 flex items-center bg-white dark:bg-zinc-950 max-md:z-100" : "hidden md:block w-full max-w-sm lg:max-w-lg",
+                containerClassName
+            )}>
                 <div className="relative w-full flex items-center gap-2">
-                    {/* Nút quay lại chỉ hiện trên Mobile khi đang mở */}
                     {isMobileOpen && (
-                        <button
-                            onClick={() => setIsMobileOpen(false)}
-                            className="md:hidden p-2 text-zinc-500 hover:text-zinc-800 dark:hover:text-zinc-200"
-                        >
-                            <ArrowLeft size={20} />
-                        </button>
+                        <button onClick={() => setIsMobileOpen(false)} className="md:hidden p-2 text-zinc-500"><ArrowLeft size={20} /></button>
                     )}
 
-                    {/* Vùng Input & Dropdown bọc trong 1 khối để thả bóng (shadow) chung */}
                     <div className="relative w-full">
-                        <div className={cn(
-                            "relative flex items-center w-full bg-zinc-100 dark:bg-[#121212] transition-all",
-                            showDropdown ? "rounded-t-2xl border-b border-zinc-200 dark:border-zinc-800" : "rounded-full"
+                        <form onSubmit={handleSearch} className={cn(
+                            "relative flex items-center w-full bg-zinc-100 dark:bg-[#18181b] transition-all border border-transparent",
+                            showDropdown ? "rounded-t-2xl border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 shadow-2xl" : "rounded-full focus-within:border-purple-500/50"
                         )}>
-                            <Search
-                                className="absolute left-4 text-zinc-400 dark:text-zinc-500"
-                                size={18}
-                            />
-
+                            <button type="submit" className="absolute left-4 text-zinc-400 hover:text-purple-500 transition-colors">
+                                <Search size={18} />
+                            </button>
                             <input
                                 ref={inputRef}
                                 type="text"
                                 value={query}
                                 onChange={(e) => setQuery(e.target.value)}
                                 onFocus={() => setIsFocused(true)}
-                                placeholder="Tìm kiếm bài hát, nghệ sĩ..."
-                                className={cn(
-                                    "w-full h-11 pl-12 pr-10 bg-transparent text-sm text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-400 dark:placeholder:text-zinc-500 focus:outline-none",
-                                    className
-                                )}
-                                {...props}
+                                placeholder="Tìm bài hát, nghệ sĩ..."
+                                className="w-full h-11 pl-12 pr-10 bg-transparent text-sm outline-none"
                             />
-
-                            {/* Nút X để xóa chữ */}
                             {query && (
                                 <button
-                                    onClick={() => {
+                                    type="button"
+                                    onClick={(e) => {
+                                        e.preventDefault();
                                         setQuery("");
                                         inputRef.current?.focus();
                                     }}
-                                    className="absolute right-4 text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200"
+                                    className="absolute right-4 text-zinc-400 hover:text-zinc-600 transition-colors"
                                 >
                                     <X size={16} />
                                 </button>
                             )}
-                        </div>
+                        </form>
 
-                        {/* Dropdown Gợi ý / Lịch sử */}
                         {showDropdown && (
-                            <div className="absolute top-full left-0 right-0 bg-zinc-100 dark:bg-[#121212] rounded-b-2xl shadow-xl overflow-hidden border-t-0 z-50">
-                                <ul className="flex flex-col py-2">
-                                    {history.map((item) => (
-                                        <li
-                                            key={item.id}
-                                            onClick={() => handleSelectHistory(item.text)}
-                                            className="flex items-center justify-between px-4 py-3 hover:bg-zinc-200/50 dark:hover:bg-zinc-800/50 cursor-pointer group transition-colors"
-                                        >
-                                            <div className="flex items-center gap-4 text-zinc-600 dark:text-zinc-300">
-                                                <History size={16} className="text-zinc-400 dark:text-zinc-500" />
-                                                <span className="text-sm font-medium">{item.text}</span>
-                                            </div>
+                            <div className="absolute top-full left-0 right-0 bg-white dark:bg-zinc-900 rounded-b-2xl shadow-2xl border border-t-0 border-zinc-200 dark:border-zinc-800 z-50 max-h-[400px] overflow-y-auto">
 
-                                            <button
-                                                onClick={(e) => handleDeleteHistory(e, item.id)}
-                                                className="text-zinc-400 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-all p-1"
+                                {/* HIỂN THỊ GỢI Ý KÈM THUMBNAIL */}
+                                {showSuggestions && (
+                                    <div className="py-2">
+                                        <p className="px-4 py-1 text-[10px] font-bold text-zinc-400 uppercase tracking-widest">Gợi ý kết quả</p>
+                                        {suggestions.map((track: any) => (
+                                            <div
+                                                key={track.id}
+                                                onClick={() => handleSelectTrack(track)}
+                                                className="flex items-center gap-3 px-4 py-2 hover:bg-zinc-100 dark:hover:bg-zinc-800 cursor-pointer transition-colors group"
                                             >
-                                                <Trash2 size={16} />
-                                            </button>
-                                        </li>
-                                    ))}
-                                </ul>
+                                                <div className="relative w-10 h-10 shrink-0">
+                                                    <img src={track.thumbnail} alt="" className="w-full h-full object-cover rounded-md" />
+                                                    <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 flex items-center justify-center rounded-md transition-opacity">
+                                                        <Music2 size={14} className="text-white" />
+                                                    </div>
+                                                </div>
+                                                <div className="flex flex-col overflow-hidden">
+                                                    <span className="text-sm font-medium truncate dark:text-zinc-200">{track.title}</span>
+                                                    <span className="text-xs text-zinc-500 truncate">{track.artist}</span>
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                )}
+
+                                {/* HIỂN THỊ LỊCH SỬ (Chỉ hiện khi chưa gõ gì) */}
+                                {showHistory && (
+                                    <div className="py-2">
+                                        <p className="px-4 py-1 text-[10px] font-bold text-zinc-400 uppercase tracking-widest">Tìm kiếm gần đây</p>
+                                        {history.map((item) => (
+                                            <div key={item.id} className="flex items-center justify-between px-4 py-2 hover:bg-zinc-100 dark:hover:bg-zinc-800 cursor-pointer group">
+                                                <div className="flex items-center gap-3 flex-1" onClick={() => { setQuery(item.text); addToHistory(item.text); router.push(`/search?q=${encodeURIComponent(item.text)}`); }}>
+                                                    <History size={16} className="text-zinc-400" />
+                                                    <span className="text-sm text-zinc-600 dark:text-zinc-400">{item.text}</span>
+                                                </div>
+                                                <button onClick={(e) => handleDeleteHistory(e, item.id)} className="opacity-0 group-hover:opacity-100 p-1 text-zinc-400 hover:text-red-500"><Trash2 size={14} /></button>
+                                            </div>
+                                        ))}
+                                    </div>
+                                )}
                             </div>
                         )}
                     </div>
