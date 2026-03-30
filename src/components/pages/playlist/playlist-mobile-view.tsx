@@ -1,3 +1,4 @@
+import { useRef } from "react";
 import { Plus, Play, Heart, MoreVertical, BarChart2 } from "lucide-react";
 import { TRACKS } from "@/data/playlist";
 import { cn } from "@/utils/cn";
@@ -11,29 +12,42 @@ interface PlaylistMobileViewProps {
 
 export function PlaylistMobileView({ playlists, activeId, onSelect, activePlaylist }: PlaylistMobileViewProps) {
     const currentPlayingId = 't2';
+    const scrollRef = useRef<HTMLDivElement>(null);
+    const touchStartX = useRef(0);
+    const touchStartY = useRef(0);
+
+    const handleTouchStart = (e: React.TouchEvent) => {
+        touchStartX.current = e.touches[0].clientX;
+        touchStartY.current = e.touches[0].clientY;
+    };
+
+    const handleTouchMove = (e: React.TouchEvent) => {
+        const dx = Math.abs(e.touches[0].clientX - touchStartX.current);
+        const dy = Math.abs(e.touches[0].clientY - touchStartY.current);
+        // Nếu đang scroll ngang thì chặn scroll dọc của parent
+        if (dx > dy) {
+            e.stopPropagation();
+        }
+    };
 
     return (
-        <div className="flex flex-col bg-background min-h-full">
+        <div className="flex flex-col gap-3 bg-background min-h-full overflow-x-hidden">
             {/* ===== SECTION 1: Playlist Collection Grid ===== */}
-            <div className="px-4 pt-4 pb-6">
-                <div className="flex items-center justify-between mb-4">
-                    <div>
-                        <p className="text-[10px] font-bold tracking-[0.18em] text-zinc-500 uppercase">Collection</p>
-                        <h1 className="text-2xl font-black text-foreground mt-0.5">My Playlists</h1>
-                    </div>
-                    <button className="w-9 h-9 flex items-center justify-center rounded-full bg-card border border-zinc-200 dark:border-white/10 text-foreground/70 hover:text-foreground transition">
-                        <Plus size={18} />
-                    </button>
-                </div>
-
+            <div className="px-4 pb-6 ">
                 {/* Playlist card grid */}
-                <div className="grid grid-cols-2 gap-3">
+                <div
+                    ref={scrollRef}
+                    onTouchStart={handleTouchStart}
+                    onTouchMove={handleTouchMove}
+                    className="flex w-full overflow-x-auto overscroll-x-contain gap-3 pb-2" // Thêm w-full và overscroll-x-contain
+                    style={{ WebkitOverflowScrolling: "touch", scrollbarWidth: "none", msOverflowStyle: "none" }}
+                >
                     {playlists.map((pl) => (
                         <div
                             key={pl.id}
                             onClick={() => onSelect(pl.id)}
                             className={cn(
-                                "relative rounded-2xl overflow-hidden cursor-pointer group transition-all",
+                                "relative w-28 h-28 rounded-2xl overflow-hidden cursor-pointer group transition-all shrink-0", // Thêm w-28 h-28 (112px)
                                 activeId === pl.id
                                     ? "ring-2 ring-purple-500 shadow-[0_0_20px_rgba(168,85,247,0.3)]"
                                     : ""
@@ -42,7 +56,7 @@ export function PlaylistMobileView({ playlists, activeId, onSelect, activePlayli
                             <img
                                 src={pl.cover}
                                 alt={pl.name}
-                                className="w-full aspect-square object-cover"
+                                className="w-full h-full object-cover" // Sửa thành w-full h-full
                             />
                             {/* Gradient overlay */}
                             <div className="absolute inset-0 bg-linear-to-t from-black/80 via-black/20 to-transparent" />
@@ -67,7 +81,7 @@ export function PlaylistMobileView({ playlists, activeId, onSelect, activePlayli
             </div>
 
             {/* ===== SECTION 2: Active Playlist Detail ===== */}
-            <div className="flex-1 px-4">
+            <div className="flex-1 px-4 pt-4 ">
                 {/* Playlist Title + action row */}
                 <div className="flex items-center justify-between mb-4">
                     <h2 className="text-xl font-black text-foreground">{activePlaylist.name}</h2>
