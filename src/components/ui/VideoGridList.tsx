@@ -78,14 +78,14 @@ export function VideoGridList({ query }: { query: string }) {
     if (query && data && tracks.length === 0) return <p className="text-center py-10 text-zinc-500 text-sm">Không tìm thấy kết quả cho "{query}".</p>;
 
     return (
-        <div className="p-6 md:p-8">
-            <h1 className="text-xl md:text-2xl font-bold mb-6 dark:text-white flex items-center gap-2">
+        <div>
+            <h1 className="text-xl md:text-2xl font-bold mb-3 dark:text-white flex items-center gap-2">
                 <Mic2 className="text-purple-600" size={24} />
                 Kết quả cho "{query}"
             </h1>
 
-            {/* GRID LAYOUT: 3 cột trên Desktop, 2 trên Tablet, 1 trên Mobile */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5 lg:gap-6">
+            {/* GRID LAYOUT: 4 cột trên Desktop, 3 trên Tablet, 1 trên Mobile */}
+            <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-5 lg:gap-6">
                 {tracks.map((track: any, index: number) => {
                     if (!track) return null;
                     const videoId = track.id?.videoId || track.id;
@@ -97,7 +97,7 @@ export function VideoGridList({ query }: { query: string }) {
                     return (
                         <div
                             key={`${videoId}-${index}`} // Đảm bảo key duy nhất khi trang lặp lại search
-                            className="group bg-white dark:bg-[#111114] p-3.5 rounded-2xl border border-zinc-100 dark:border-zinc-800 hover:border-purple-200 dark:hover:border-purple-900/50 transition-all shadow-sm hover:shadow-lg"
+                            className="group bg-white p-1 rounded-2xl border border-zinc-100  hover:border-purple-200  transition-all shadow-sm hover:shadow-lg"
                             onMouseEnter={() => setHoveredId(videoId)}
                             onMouseLeave={() => setHoveredId(null)}
                         >
@@ -145,7 +145,7 @@ export function VideoGridList({ query }: { query: string }) {
                                     {artist}
                                 </p>
 
-                                <div className="flex items-center justify-end pt-3 border-t border-zinc-100 dark:border-zinc-800 mt-2">
+                                <div className="flex items-center justify-end border-t border-zinc-100 dark:border-zinc-800">
                                     {/* Action Buttons */}
                                     <div className="flex items-center gap-1 transition-opacity -mr-1">
                                         <button
@@ -197,7 +197,7 @@ function SkeletonGrid() {
     return (
         <div className="p-8">
             <div className="h-7 w-60 bg-zinc-200 dark:bg-zinc-800 rounded mb-6 animate-pulse"></div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6">
                 {[...Array(12)].map((_, i) => (
                     <div key={i} className="bg-white dark:bg-[#111114] p-4 rounded-2xl border border-zinc-100 dark:border-zinc-800 animate-pulse">
                         <div className="aspect-video bg-zinc-200 dark:bg-zinc-800 rounded-xl mb-4"></div>

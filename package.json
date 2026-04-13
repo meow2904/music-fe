@@ -8,6 +8,8 @@
     "start": "next start"
   },
   "dependencies": {
+    "@heroui/react": "^3.0.2",
+    "@heroui/styles": "^3.0.2",
     "axios": "^1.13.6",
     "clsx": "^2.1.1",
     "lucide-react": "^1.0.1",
