@@ -1,7 +1,7 @@
 "use client"
 import { Music, Search, Zap, Clock, Plus } from "lucide-react";
 import { RoomGrid } from "./room-grid";
-import { ModalCustom } from "@/components/ui/Modal";
+import { CreateRoomModal } from "./create-zoom";
 
 const mockRoomsData = [
     { id: 1, roomName: 'Học bài cùng mình - Lofi Study', isStreaming: true, listenerCount: 15, songCount: 42, tags: ['Focus'] },
@@ -18,9 +18,8 @@ export default function RoomPage() {
     return (
         <div className="min-h-screen bg-[#F8FAFC] text-zinc-900">
             <div className="max-w-[1400px] mx-auto px-6">
-                <div className="pt-10 pb-6 border-b border-zinc-100">
+                <div className="py-6 border-b border-zinc-100">
                     <div className="flex items-center justify-between gap-6 flex-wrap">
-                        {/* Title */}
                         <div>
                             <h1 className="flex items-center gap-3 text-3xl font-extrabold text-zinc-950 tracking-tight">
                                 <span className="relative flex h-3 w-3">
@@ -30,44 +29,27 @@ export default function RoomPage() {
                                 <Music className="text-emerald-500" />
                             </h1>
                         </div>
-
-                        {/* Controls (Search & Filters) */}
-                        <div className="flex items-center gap-3 flex-wrap">
-                            {/* Search Input */}
-                            <div className="relative w-[300px]">
+                        <div className="flex items-center gap-3 flex-wrap justify-center">
+                            <div className="relative w-[260px]">
                                 <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-zinc-400" />
                                 <input
                                     type="text"
                                     placeholder="Tên phòng, thể loại..."
-                                    className="w-full pl-11 pr-4 py-2.5 rounded-xl bg-zinc-100 border border-zinc-200 text-sm text-zinc-900 placeholder:text-zinc-400 focus:ring-2 focus:ring-emerald-200 focus:border-emerald-300 transition"
+                                    className="w-full pl-11 pr-4 py-2.5 rounded-xl bg-zinc-100 border border-zinc-200 text-sm text-zinc-900 placeholder:text-zinc-400 focus:ring-2 focus:ring-emerald-200 focus:border-emerald-300 outline-none transition"
                                 />
                             </div>
 
-                            {/* Filter Buttons */}
                             <div className="flex items-center gap-2">
                                 <button className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-emerald-50 text-emerald-700 font-medium text-sm border border-emerald-100 hover:bg-emerald-100 transition">
                                     <Zap className="w-4 h-4" />
-                                    Phòng nổi bật
+                                    Nổi bật
                                 </button>
                                 <button className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-zinc-700 font-medium text-sm hover:bg-zinc-100 transition">
                                     <Clock className="w-4 h-4 text-zinc-400" />
-                                    Mở gần đây
+                                    Mới nhất
                                 </button>
+                                <CreateRoomModal />
                             </div>
-
-                            {/* Add room */}
-                            <ModalCustom
-                                action={(<div className="flex items-center gap-2">
-                                    <button className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-zinc-700 font-medium text-sm hover:bg-zinc-100 transition">
-                                        <Plus className="w-4 h-4 text-zinc-400" />
-                                        Thêm
-                                    </button>
-                                </div>)}
-                                title="Tạo mới phòng"
-
-
-                            ></ModalCustom>
-
                         </div>
                     </div>
                 </div>
