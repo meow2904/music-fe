@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server'
-import { createClient } from '@/lib/supabase/server'
+import { createClient } from '@/utils/supabase/server'
 
 export async function GET(request: Request) {
     const { searchParams, origin } = new URL(request.url)
@@ -14,6 +14,5 @@ export async function GET(request: Request) {
         }
     }
 
-    // Return the user to an error page with some instructions
     return NextResponse.redirect(`${origin}/?error=auth-code-error`)
 }

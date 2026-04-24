@@ -8,7 +8,7 @@ export async function updateSession(request: NextRequest) {
 
     const supabase = createServerClient(
         process.env.NEXT_PUBLIC_SUPABASE_URL!,
-        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+        process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY!,
         {
             cookies: {
                 getAll() {
@@ -30,7 +30,7 @@ export async function updateSession(request: NextRequest) {
     // IMPORTANT: Avoid writing any logic between createServerClient and
     // supabase.auth.getUser(). A simple mistake could make it very hard to debug
     // issues with users being randomly logged out.
-    await supabase.auth.getUser();
+    const { data: { user } } = await supabase.auth.getUser();
 
-    return supabaseResponse;
+    return { supabaseResponse, user };
 }

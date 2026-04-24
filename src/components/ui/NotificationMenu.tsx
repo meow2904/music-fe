@@ -57,8 +57,8 @@ export function NotificationMenu() {
             <button
                 onClick={() => setIsOpen(!isOpen)}
                 className={`p-2.5 rounded-full transition-colors ${isOpen
-                    ? "bg-zinc-100 dark:bg-zinc-800 text-purple-600 dark:text-purple-400"
-                    : "text-zinc-500 hover:bg-zinc-100 dark:text-zinc-400 dark:hover:bg-zinc-800"
+                    ? "bg-zinc-100 text-purple-600"
+                    : "text-zinc-500 hover:bg-zinc-100"
                     }`}
             >
                 {hasUnread ? <BellDot size={20} /> : <Bell size={20} />}
@@ -66,15 +66,15 @@ export function NotificationMenu() {
 
             {/* Dropdown Menu */}
             {isOpen && (
-                <div className="absolute right-0 md:top-full top-auto max-md:fixed max-md:top-[60px] max-md:left-4 max-md:right-4 max-md:w-auto mt-2 md:w-96 bg-white dark:bg-zinc-950 border border-zinc-100 dark:border-zinc-800 rounded-2xl shadow-xl z-[100] overflow-hidden flex flex-col transform opacity-100 scale-100 transition-all max-md:origin-top md:origin-top-right">
+                <div className="absolute right-0 md:top-full top-auto max-md:fixed max-md:top-[60px] max-md:left-4 max-md:right-4 max-md:w-auto mt-2 md:w-96 bg-white border border-zinc-100 rounded-2xl shadow-xl z-[100] overflow-hidden flex flex-col transform opacity-100 scale-100 transition-all max-md:origin-top md:origin-top-right">
 
                     {/* Header của Menu */}
-                    <div className="flex items-center justify-between p-4 border-b border-zinc-50 dark:border-zinc-800/50">
-                        <h3 className="font-bold text-sm text-zinc-900 dark:text-zinc-100">Thông báo</h3>
+                    <div className="flex items-center justify-between p-4 border-b border-zinc-50">
+                        <h3 className="font-bold text-sm text-zinc-900">Thông báo</h3>
                         {hasUnread && (
                             <button
                                 onClick={markAllAsRead}
-                                className="text-[10px] flex items-center gap-1 font-medium text-purple-600 dark:text-purple-400 hover:text-purple-700 transition-colors"
+                                className="text-[10px] flex items-center gap-1 font-medium text-purple-600 hover:text-purple-700 transition-colors"
                             >
                                 <Check size={12} />
                                 Đánh dấu đã đọc
@@ -89,7 +89,7 @@ export function NotificationMenu() {
                                 {notifications.map((notif) => (
                                     <div
                                         key={notif.id}
-                                        className={`p-4 border-b border-zinc-50 dark:border-zinc-800/50 hover:bg-zinc-50 dark:hover:bg-zinc-900 transition-colors cursor-pointer flex gap-3 ${notif.unread ? "bg-purple-50/50 dark:bg-purple-900/10" : ""
+                                        className={`p-4 border-b border-zinc-50 hover:bg-zinc-50 transition-colors cursor-pointer flex gap-3 ${notif.unread ? "bg-purple-50/50" : ""
                                             }`}
                                     >
                                         {/* Chấm xanh hiển thị trạng thái chưa đọc */}
@@ -98,10 +98,10 @@ export function NotificationMenu() {
                                         </div>
 
                                         <div className="flex-1 space-y-1">
-                                            <p className={`text-sm ${notif.unread ? "font-bold text-zinc-900 dark:text-zinc-100" : "font-medium text-zinc-700 dark:text-zinc-300"}`}>
+                                            <p className={`text-sm ${notif.unread ? "font-bold text-zinc-900" : "font-medium text-zinc-700"}`}>
                                                 {notif.title}
                                             </p>
-                                            <p className="text-xs text-zinc-500 dark:text-zinc-400 leading-relaxed">
+                                            <p className="text-xs text-zinc-500 leading-relaxed">
                                                 {notif.message}
                                             </p>
                                             <p className="text-[10px] text-zinc-400 font-medium pt-1">
@@ -113,14 +113,14 @@ export function NotificationMenu() {
                             </div>
                         ) : (
                             <div className="p-8 text-center flex flex-col items-center gap-2">
-                                <Bell className="text-zinc-300 dark:text-zinc-700 mb-2" size={32} />
+                                <Bell className="text-zinc-300 mb-2" size={32} />
                                 <p className="text-sm text-zinc-500">Bạn chưa có thông báo mới nào</p>
                             </div>
                         )}
                     </div>
 
                     {/* Footer của Menu */}
-                    <button className="p-3 text-xs font-bold text-center text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-100 bg-zinc-50 dark:bg-zinc-900/50 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors">
+                    <button className="p-3 text-xs font-bold text-center text-zinc-500 hover:text-zinc-900 bg-zinc-50 hover:bg-zinc-100 transition-colors">
                         Xem tất cả thông báo
                     </button>
                 </div>

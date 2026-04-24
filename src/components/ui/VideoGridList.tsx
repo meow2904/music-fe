@@ -79,7 +79,7 @@ export function VideoGridList({ query }: { query: string }) {
 
     return (
         <div>
-            <h1 className="text-xl md:text-2xl font-bold mb-3 dark:text-white flex items-center gap-2">
+            <h1 className="text-xl md:text-2xl font-bold mb-3 flex items-center gap-2">
                 <Mic2 className="text-purple-600" size={24} />
                 Kết quả cho "{query}"
             </h1>
@@ -136,35 +136,35 @@ export function VideoGridList({ query }: { query: string }) {
                             <div className="flex flex-col gap-1 px-1">
                                 <h3 className={cn(
                                     "text-sm font-semibold truncate group-hover:text-purple-600 transition-colors",
-                                    isCurrent ? "text-purple-600" : "text-zinc-900 dark:text-zinc-100"
+                                    isCurrent ? "text-purple-600" : "text-zinc-900"
                                 )}>
                                     {title}
                                 </h3>
-                                <p className="text-xs text-zinc-500 dark:text-zinc-400 truncate flex items-center gap-1.5">
+                                <p className="text-xs text-zinc-500 truncate flex items-center gap-1.5">
                                     <Mic2 size={12} className="text-zinc-400 shrink-0" />
                                     {artist}
                                 </p>
 
-                                <div className="flex items-center justify-end border-t border-zinc-100 dark:border-zinc-800">
+                                <div className="flex items-center justify-end border-t border-zinc-100">
                                     {/* Action Buttons */}
                                     <div className="flex items-center gap-1 transition-opacity -mr-1">
                                         <button
                                             onClick={(e) => { e.stopPropagation(); /* TODO: Like logic */ }}
-                                            className="p-1.5 text-zinc-400 hover:text-red-500 hover:bg-red-50 dark:hover:text-red-400 dark:hover:bg-red-500/10 rounded-full transition-colors"
+                                            className="p-1.5 text-zinc-400 hover:text-red-500 hover:bg-red-50 rounded-full transition-colors"
                                             title="Yêu thích"
                                         >
                                             <Heart size={14} />
                                         </button>
                                         <button
                                             onClick={(e) => { e.stopPropagation(); /* TODO: Add to Playlist logic */ }}
-                                            className="p-1.5 text-zinc-400 hover:text-purple-600 hover:bg-purple-50 dark:hover:text-purple-400 dark:hover:bg-purple-500/10 rounded-full transition-colors"
+                                            className="p-1.5 text-zinc-400 hover:text-purple-600 hover:bg-purple-50 rounded-full transition-colors"
                                             title="Thêm vào danh sách phát"
                                         >
                                             <Plus size={16} />
                                         </button>
                                         <button
                                             onClick={(e) => { e.stopPropagation(); /* TODO: Share logic */ }}
-                                            className="p-1.5 text-zinc-400 hover:text-blue-500 hover:bg-blue-50 dark:hover:text-blue-400 dark:hover:bg-blue-500/10 rounded-full transition-colors"
+                                            className="p-1.5 text-zinc-400 hover:text-blue-500 hover:bg-blue-50 rounded-full transition-colors"
                                             title="Chia sẻ"
                                         >
                                             <Share2 size={14} />
@@ -196,13 +196,13 @@ export function VideoGridList({ query }: { query: string }) {
 function SkeletonGrid() {
     return (
         <div className="p-8">
-            <div className="h-7 w-60 bg-zinc-200 dark:bg-zinc-800 rounded mb-6 animate-pulse"></div>
+            <div className="h-7 w-60 bg-zinc-200 rounded mb-6 animate-pulse"></div>
             <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6">
                 {[...Array(12)].map((_, i) => (
-                    <div key={i} className="bg-white dark:bg-[#111114] p-4 rounded-2xl border border-zinc-100 dark:border-zinc-800 animate-pulse">
-                        <div className="aspect-video bg-zinc-200 dark:bg-zinc-800 rounded-xl mb-4"></div>
-                        <div className="h-4 w-3/4 bg-zinc-200 dark:bg-zinc-800 rounded mb-2"></div>
-                        <div className="h-3 w-1/2 bg-zinc-200 dark:bg-zinc-800 rounded"></div>
+                    <div key={i} className="bg-white] p-4 rounded-2xl border border-zinc-100 animate-pulse">
+                        <div className="aspect-video bg-zinc-200 rounded-xl mb-4"></div>
+                        <div className="h-4 w-3/4 bg-zinc-200 rounded mb-2"></div>
+                        <div className="h-3 w-1/2 bg-zinc-200 rounded"></div>
                     </div>
                 ))}
             </div>

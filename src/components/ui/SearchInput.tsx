@@ -92,14 +92,14 @@ export function SearchInput({ containerClassName, className, ...props }: any) {
     return (
         <>
             {!isMobileOpen && (
-                <button onClick={() => setIsMobileOpen(true)} className="md:hidden p-2.5 rounded-full text-zinc-500 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition">
+                <button onClick={() => setIsMobileOpen(true)} className="md:hidden p-2.5 rounded-full text-zinc-500 hover:bg-zinc-100 transition">
                     <Search size={20} />
                 </button>
             )}
 
             <div ref={containerRef} className={cn(
                 "transition-all z-50",
-                isMobileOpen ? "fixed inset-0 h-16 px-4 flex items-center bg-white dark:bg-zinc-950 max-md:z-100" : "hidden md:block w-full max-w-sm lg:max-w-lg",
+                isMobileOpen ? "fixed inset-0 h-16 px-4 flex items-center bg-white max-md:z-100" : "hidden md:block w-full max-w-sm lg:max-w-lg",
                 containerClassName
             )}>
                 <div className="relative w-full flex items-center gap-2">
@@ -109,8 +109,8 @@ export function SearchInput({ containerClassName, className, ...props }: any) {
 
                     <div className="relative w-full">
                         <form onSubmit={handleSearch} className={cn(
-                            "relative flex items-center w-full bg-zinc-100 dark:bg-[#18181b] transition-all border border-transparent",
-                            showDropdown ? "rounded-t-2xl border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 shadow-2xl" : "rounded-full focus-within:border-purple-500/50"
+                            "relative flex items-center w-full bg-zinc-100] transition-all border border-zinc-200",
+                            showDropdown ? "rounded-t-2xl bg-white shadow-2xl" : "rounded-full focus-within:border-purple-500/50"
                         )}>
                             <button type="submit" className="absolute left-4 text-zinc-400 hover:text-purple-500 transition-colors">
                                 <Search size={18} />
@@ -140,7 +140,7 @@ export function SearchInput({ containerClassName, className, ...props }: any) {
                         </form>
 
                         {showDropdown && (
-                            <div className="absolute top-full left-0 right-0 bg-white dark:bg-zinc-900 rounded-b-2xl shadow-2xl border border-t-0 border-zinc-200 dark:border-zinc-800 z-50 max-h-[400px] overflow-y-auto">
+                            <div className="absolute top-full left-0 right-0 bg-white rounded-b-2xl shadow-2xl border border-t-0 border-zinc-200 z-50 max-h-[400px] overflow-y-auto">
 
                                 {/* HIỂN THỊ GỢI Ý KÈM THUMBNAIL */}
                                 {showSuggestions && (
@@ -150,7 +150,7 @@ export function SearchInput({ containerClassName, className, ...props }: any) {
                                             <div
                                                 key={track.id}
                                                 onClick={() => handleSelectTrack(track)}
-                                                className="flex items-center gap-3 px-4 py-2 hover:bg-zinc-100 dark:hover:bg-zinc-800 cursor-pointer transition-colors group"
+                                                className="flex items-center gap-3 px-4 py-2 hover:bg-zinc-100 cursor-pointer transition-colors group"
                                             >
                                                 <div className="relative w-10 h-10 shrink-0">
                                                     <img src={track.thumbnail} alt="" className="w-full h-full object-cover rounded-md" />
@@ -159,7 +159,7 @@ export function SearchInput({ containerClassName, className, ...props }: any) {
                                                     </div>
                                                 </div>
                                                 <div className="flex flex-col overflow-hidden">
-                                                    <span className="text-sm font-medium truncate dark:text-zinc-200">{track.title}</span>
+                                                    <span className="text-sm font-medium truncate">{track.title}</span>
                                                     <span className="text-xs text-zinc-500 truncate">{track.artist}</span>
                                                 </div>
                                             </div>
@@ -172,10 +172,10 @@ export function SearchInput({ containerClassName, className, ...props }: any) {
                                     <div className="py-2">
                                         <p className="px-4 py-1 text-[10px] font-bold text-zinc-400 uppercase tracking-widest">Tìm kiếm gần đây</p>
                                         {history.map((item) => (
-                                            <div key={item.id} className="flex items-center justify-between px-4 py-2 hover:bg-zinc-100 dark:hover:bg-zinc-800 cursor-pointer group">
+                                            <div key={item.id} className="flex items-center justify-between px-4 py-2 hover:bg-zinc-100 cursor-pointer group">
                                                 <div className="flex items-center gap-3 flex-1" onClick={() => { setQuery(item.text); addToHistory(item.text); router.push(`/search?q=${encodeURIComponent(item.text)}`); }}>
                                                     <History size={16} className="text-zinc-400" />
-                                                    <span className="text-sm text-zinc-600 dark:text-zinc-400">{item.text}</span>
+                                                    <span className="text-sm text-zinc-600">{item.text}</span>
                                                 </div>
                                                 <button onClick={(e) => handleDeleteHistory(e, item.id)} className="opacity-0 group-hover:opacity-100 p-1 text-zinc-400 hover:text-red-500"><Trash2 size={14} /></button>
                                             </div>

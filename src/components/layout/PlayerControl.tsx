@@ -7,7 +7,7 @@ import { usePlayerStore } from "@/store/usePlayerStore";
 // Component Slider tái sử dụng
 function Slider({ value, max, onChange, className }: { value: number; max: number; onChange?: (val: number) => void; className?: string }) {
     return (
-        <div className={cn("relative h-1.5 w-full bg-zinc-200 rounded-full dark:bg-zinc-800 group", className)}>
+        <div className={cn("relative h-1.5 w-full bg-zinc-200 rounded-full group", className)}>
             <div
                 style={{ width: max > 0 ? `${(value / max) * 100}%` : '0%' }}
                 className="absolute top-0 left-0 h-full bg-[#7000FF] rounded-full transition-all duration-100 ease-linear pointer-events-none"
@@ -39,8 +39,8 @@ export function PlayerControl() {
     return (
         <div className={cn(
             "fixed z-50 transition-all duration-300 flex items-center justify-between",
-            "bottom-14 left-2 right-2 h-14 bg-white dark:bg-zinc-900 rounded-xl px-4 shadow-xl border border-zinc-100 dark:border-zinc-800",
-            "md:bottom-0 md:left-0 md:right-0 md:h-[90px] md:rounded-none md:border-x-0 md:border-b-0 md:px-8 md:shadow-[0_-4px_20px_rgba(0,0,0,0.03)] dark:md:shadow-none"
+            "bottom-14 left-2 right-2 h-14 bg-white rounded-xl px-4 shadow-xl border border-zinc-100",
+            "md:bottom-0 md:left-0 md:right-0 md:h-[90px] md:rounded-none md:border-x-0 md:border-b-0 md:px-8 md:shadow-[0_-4px_20px_rgba(0,0,0,0.03)]"
         )}>
 
             <div className="flex items-center gap-3 md:gap-4 md:w-[30%] md:min-w-[250px]">
@@ -50,8 +50,8 @@ export function PlayerControl() {
                     className="rounded-md md:rounded-[14px] w-10 h-10 md:w-14 md:h-14 object-cover shadow-sm"
                 />
                 <div className="flex flex-col">
-                    <h3 className="text-sm font-bold text-zinc-900 dark:text-zinc-100 line-clamp-1">{currentTrack?.title || "No Title"}</h3>
-                    <p className="text-[10px] md:text-xs text-zinc-500 dark:text-zinc-400 line-clamp-1">{currentTrack?.artist || "Unknown Artist"}</p>
+                    <h3 className="text-sm font-bold text-zinc-900 line-clamp-1">{currentTrack?.title || "No Title"}</h3>
+                    <p className="text-[10px] md:text-xs text-zinc-500 line-clamp-1">{currentTrack?.artist || "Unknown Artist"}</p>
                 </div>
                 <button className="hidden md:block ml-4 text-[#7000FF] hover:scale-110 transition-transform">
                     <Heart size={18} fill="currentColor" />
@@ -61,7 +61,7 @@ export function PlayerControl() {
             <div className="hidden md:flex flex-1 max-w-2xl flex-col items-center gap-2">
                 <div className="flex items-center gap-6">
                     <button className="text-zinc-400 hover:text-[#7000FF] transition"><Shuffle size={18} /></button>
-                    <button className="text-zinc-600 dark:text-zinc-400 hover:text-[#7000FF] transition"><SkipBack size={20} fill="currentColor" /></button>
+                    <button className="text-zinc-600 hover:text-[#7000FF] transition"><SkipBack size={20} fill="currentColor" /></button>
 
                     <button
                         onClick={() => setPlaying(!isPlaying)}
@@ -70,11 +70,11 @@ export function PlayerControl() {
                         {isPlaying ? <Pause size={20} fill="currentColor" /> : <Play size={20} fill="currentColor" className="ml-1" />}
                     </button>
 
-                    <button className="text-zinc-600 dark:text-zinc-400 hover:text-[#7000FF] transition"><SkipForward size={20} fill="currentColor" /></button>
+                    <button className="text-zinc-600 hover:text-[#7000FF] transition"><SkipForward size={20} fill="currentColor" /></button>
                     <button className="text-zinc-400 hover:text-[#7000FF] transition"><Repeat size={18} /></button>
                 </div>
 
-                <div className="flex items-center gap-3 w-full text-[10px] font-bold text-zinc-500 dark:text-zinc-400 tabular-nums">
+                <div className="flex items-center gap-3 w-full text-[10px] font-bold text-zinc-500 tabular-nums">
                     <span className="w-8 text-right">{formatTime(currentTime)}</span>
                     <Slider
                         value={currentTime}
@@ -102,7 +102,7 @@ export function PlayerControl() {
                     </button>
                 </div>
 
-                <div className="flex items-center gap-2 w-28 border-l border-zinc-200 dark:border-zinc-800 pl-6 shrink-0">
+                <div className="flex items-center gap-2 w-28 border-l border-zinc-200 pl-6 shrink-0">
                     <Volume2 size={18} className="text-zinc-500" />
                     <Slider value={volume} max={100} onChange={setVolume} className="h-1" />
                 </div>

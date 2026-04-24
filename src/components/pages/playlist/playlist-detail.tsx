@@ -21,7 +21,7 @@ export function PlaylistDetail({ playlist }: { playlist: any }) {
                             <Play fill="currentColor" size={18} /> PLAY ALL
                         </button>
                         <h1 className="text-3xl md:text-5xl lg:text-5xl font-black text-foreground leading-tight">{playlist.name}</h1>
-                        <button className="w-10 h-10 md:w-12 md:h-12 flex items-center justify-center rounded-full border border-zinc-200 dark:border-white/10 hover:bg-background/50 transition text-foreground/70">
+                        <button className="w-10 h-10 md:w-12 md:h-12 flex items-center justify-center rounded-full border border-zinc-200 hover:bg-background/50 transition text-foreground/70">
                             <Pen size={16} />
                         </button>
                     </div>
@@ -57,7 +57,7 @@ export function PlaylistDetail({ playlist }: { playlist: any }) {
                                     <div className="flex flex-col truncate min-w-0">
                                         <span className={cn(
                                             "text-sm md:text-[15px] font-semibold truncate",
-                                            isPlaying ? "text-purple-600 dark:text-[#c084fc]" : "text-foreground"
+                                            isPlaying ? "text-purple-600]" : "text-foreground"
                                         )}>
                                             {track.title}
                                         </span>
@@ -72,7 +72,7 @@ export function PlaylistDetail({ playlist }: { playlist: any }) {
                                 <div className="flex items-center justify-end gap-2 md:gap-3 text-xs md:text-sm font-medium text-zinc-400">
                                     <Heart size={14} className={cn(
                                         "cursor-pointer opacity-0 group-hover:opacity-100 transition hidden md:block",
-                                        isPlaying && "opacity-100 text-purple-600 dark:text-[#c084fc]",
+                                        isPlaying && "opacity-100 text-purple-600]",
                                         "hover:text-foreground"
                                     )} fill={isPlaying ? "currentColor" : "none"} />
                                     <span className="min-w-[40px] text-right">{track.time}</span>
@@ -87,9 +87,9 @@ export function PlaylistDetail({ playlist }: { playlist: any }) {
             <div className="pt-2">
                 <h2 className="text-xl md:text-2xl font-bold text-foreground mb-6">Related Playlists</h2>
                 <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 p-1">
-                    <div className="aspect-4/3 bg-background/50 rounded-2xl border border-zinc-200 dark:border-white/5 hover:bg-background transition cursor-pointer shadow-sm"></div>
-                    <div className="aspect-4/3 bg-background/50 rounded-2xl border border-zinc-200 dark:border-white/5 hover:bg-background transition cursor-pointer shadow-sm"></div>
-                    <div className="aspect-4/3 bg-background/50 rounded-2xl border border-zinc-200 dark:border-white/5 hover:bg-background transition cursor-pointer shadow-sm"></div>
+                    <div className="aspect-4/3 bg-background/50 rounded-2xl border border-zinc-200 hover:bg-background transition cursor-pointer shadow-sm"></div>
+                    <div className="aspect-4/3 bg-background/50 rounded-2xl border border-zinc-200 hover:bg-background transition cursor-pointer shadow-sm"></div>
+                    <div className="aspect-4/3 bg-background/50 rounded-2xl border border-zinc-200 hover:bg-background transition cursor-pointer shadow-sm"></div>
                 </div>
             </div>
         </div>

@@ -130,7 +130,7 @@ export function PlaylistMobileView({ playlists, activeId, onSelect, activePlayli
                                 <div className="flex-1 min-w-0">
                                     <p className={cn(
                                         "text-sm font-semibold truncate",
-                                        isPlaying ? "text-purple-500 dark:text-purple-400" : "text-foreground"
+                                        isPlaying ? "text-purple-500" : "text-foreground"
                                     )}>
                                         {track.title}
                                     </p>
@@ -140,7 +140,7 @@ export function PlaylistMobileView({ playlists, activeId, onSelect, activePlayli
                                 {/* Playing indicator OR heart + more */}
                                 <div className="flex items-center gap-2 shrink-0">
                                     {isPlaying ? (
-                                        <BarChart2 size={18} className="text-purple-500 dark:text-purple-400" />
+                                        <BarChart2 size={18} className="text-purple-500" />
                                     ) : (
                                         <Heart size={16} className="text-zinc-400 hover:text-purple-400 transition cursor-pointer" />
                                     )}
