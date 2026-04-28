@@ -45,7 +45,8 @@ export function AuthModal({ isOpen, onOpenChange }: { isOpen: boolean, onOpenCha
             const email = formData.get('email') as string;
 
             const { error } = await supabase.auth.resetPasswordForEmail(email, {
-                redirectTo: `${window.location.origin}/auth/callback`,
+                // redirectTo: `${window.location.origin}/update-password`,
+                redirectTo: `${window.location.origin}/auth/callback?next=/update-password`,
             });
 
             if (error) {
@@ -66,9 +67,6 @@ export function AuthModal({ isOpen, onOpenChange }: { isOpen: boolean, onOpenCha
             const formData = new FormData(e.currentTarget);
             const email = formData.get('email') as string;
             const password = formData.get('password') as string;
-
-            toast.success("Đăng nhập thành công!");
-
             if (isLogin) {
                 const { error } = await supabase.auth.signInWithPassword({ email, password });
                 if (error) {
@@ -130,7 +128,7 @@ export function AuthModal({ isOpen, onOpenChange }: { isOpen: boolean, onOpenCha
                                     <div className="flex justify-center mt-4 gap-3">
                                         <Button
                                             type="button"
-                                            variant="flat"
+                                            // variant="flat"
                                             className="h-12 w-full font-bold text-zinc-700 bg-zinc-100 rounded-xl"
                                             onPress={() => setIsForgotPassword(false)}
                                             isDisabled={isLoading}

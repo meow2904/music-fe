@@ -16,8 +16,8 @@ export function RoomGrid({ rooms }: RoomGridProps) {
             </div>
 
             {/* Load More Button */}
-            <div className="flex justify-center mt-12 mb-8">
-                <button className="flex items-center gap-2 px-8 py-3 rounded-xl bg-white text-zinc-800 border border-zinc-200 font-medium text-sm shadow-sm hover:border-zinc-300 hover:bg-zinc-50 transition">
+            <div className="flex justify-center mt-3 mb-8">
+                <button className="flex items-center gap-2 px-8 py-3 rounded-xl bg-linear-to-r from-violet-400/40 to-blue-500/40 text-zinc-800 border border-zinc-200 font-medium text-sm shadow-sm hover:border-zinc-300 hover:bg-zinc-50 transition">
                     <ChevronDown className="w-4 h-4 text-zinc-500" />
                     Xem thêm phòng
                 </button>

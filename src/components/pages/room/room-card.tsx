@@ -17,17 +17,17 @@ const AvatarStack = ({ count }: { count: number }) => {
         '/anh-rose.jpg',
     ];
     return (
-        <div className="flex -space-x-3 overflow-hidden">
+        <div className="flex items-center -space-x-3">
             {avatars.slice(0, 3).map((src, index) => (
                 <img
                     key={index}
-                    className="inline-block h-6 w-6 rounded-full ring-2 ring-white"
+                    className="inline-block h-6 w-6 shrink-0 rounded-full ring-2 ring-white object-cover"
                     src={src}
                     alt={`User ${index + 1}`}
                 />
             ))}
             {count > 3 && (
-                <div className="flex items-center justify-center h-6 w-6 rounded-full bg-zinc-100 ring-2 ring-white text-[10px] text-zinc-600 font-medium">
+                <div className="flex shrink-0 items-center justify-center h-6 min-w-[24px] px-1.5 rounded-full bg-zinc-100 ring-2 ring-white text-[10px] text-zinc-600 font-medium">
                     +{count - 3}
                 </div>
             )}
@@ -37,7 +37,7 @@ const AvatarStack = ({ count }: { count: number }) => {
 
 export function RoomCard({ roomName, isStreaming, listenerCount, songCount, tags }: RoomCardProps) {
     return (
-        <div className="bg-white border border-zinc-200/80 rounded-2xl p-5 shadow-sm hover:border-zinc-300 hover:shadow-md transition-all group flex flex-col justify-between h-[210px]">
+        <div className="bg-linear-to-r from-violet-400/40 to-blue-500/40 border border-zinc-200/80 rounded-2xl p-5 shadow-sm hover:border-zinc-300 hover:shadow-md transition-all group flex flex-col justify-between h-[210px]">
             {/* Top Section */}
             <div className="flex gap-4 items-start">
                 {/* Mock Room Icon/Avatar */}
@@ -89,7 +89,7 @@ export function RoomCard({ roomName, isStreaming, listenerCount, songCount, tags
             {/* Bottom Section (Action) */}
             <div className="flex justify-between items-center pt-3 text-zinc-600 group-hover:text-emerald-600 transition-colors">
                 <span className="font-medium text-sm">Nghe cùng</span>
-                <ArrowRight className="w-5 h-5" />
+                <ArrowRight className="w-5 h-5 hover:cursor-pointer hover:translate-x-1 transition-all" />
             </div>
         </div>
     );

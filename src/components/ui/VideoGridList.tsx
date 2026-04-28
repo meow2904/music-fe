@@ -97,7 +97,7 @@ export function VideoGridList({ query }: { query: string }) {
                     return (
                         <div
                             key={`${videoId}-${index}`} // Đảm bảo key duy nhất khi trang lặp lại search
-                            className="group bg-white p-1 rounded-2xl border border-zinc-100  hover:border-purple-200  transition-all shadow-sm hover:shadow-lg"
+                            className="group bg-white p-1 rounded-2xl border border-zinc-100  hover:border-purple-500/50  transition-all shadow-sm hover:shadow-lg"
                             onMouseEnter={() => setHoveredId(videoId)}
                             onMouseLeave={() => setHoveredId(null)}
                         >

@@ -16,9 +16,9 @@ const mockRoomsData = [
 
 export default function RoomPage() {
     return (
-        <div className="min-h-screen bg-[#F8FAFC] text-zinc-900">
+        <div className="min-h-screen bg-linear-to-b from-violet-300/10 via-violet-100 to-blue-100 text-zinc-900 rounded-xl">
             <div className="max-w-[1400px] mx-auto px-6">
-                <div className="py-6 border-b border-zinc-100">
+                <div className="py-3 border-b border-zinc-100">
                     <div className="flex items-center justify-between gap-6 flex-wrap">
                         <div>
                             <h1 className="flex items-center gap-3 text-3xl font-extrabold text-zinc-950 tracking-tight">
@@ -35,7 +35,7 @@ export default function RoomPage() {
                                 <input
                                     type="text"
                                     placeholder="Tên phòng, thể loại..."
-                                    className="w-full pl-11 pr-4 py-2.5 rounded-xl bg-zinc-100 border border-zinc-200 text-sm text-zinc-900 placeholder:text-zinc-400 focus:ring-2 focus:ring-emerald-200 focus:border-emerald-300 outline-none transition"
+                                    className="w-full pl-11 pr-4 py-2.5 rounded-xl bg-white border border-zinc-200 text-sm text-zinc-900 placeholder:text-zinc-400 outline-none focus:border-purple-500/50 transition"
                                 />
                             </div>
 
