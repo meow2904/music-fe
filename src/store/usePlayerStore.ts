@@ -18,6 +18,9 @@ interface PlayerState {
   seekTo: number | null;
   index: number;       // Vị trí bài hiện tại trong queue
   isAutoplay: boolean; // Trạng thái bật/tắt tự động tìm bài tương tự
+  isLooping: boolean;  // Trạng thái lặp bài hiện tại
+  isShuffled: boolean; // Trạng thái trộn bài
+  isZoomed: boolean;   // Trạng thái hiển thị giao diện Music Zoom
 
   mode: 'private' | 'room';
   roomId: string | null;
@@ -34,6 +37,10 @@ interface PlayerState {
   fetchRelatedYouTubeTrack: (videoId: string) => Promise<Track | null>;
   setMode: (mode: 'private' | 'room', roomId?: string | null) => void;
   syncRoomState: (data: Partial<PlayerState>) => void; // Hàm nhận lệnh từ Socket
+  toggleLoop: () => void;
+  toggleShuffle: () => void;
+  setZoom: (isZoomed: boolean) => void;
+  toggleZoom: () => void;
 }
 
 export const usePlayerStore = create<PlayerState>((set) => ({
@@ -46,6 +53,9 @@ export const usePlayerStore = create<PlayerState>((set) => ({
   queue: [],
   index: 0,
   isAutoplay: true,
+  isLooping: false,
+  isShuffled: false,
+  isZoomed: false,
 
   mode: 'private',
   roomId: null,
@@ -66,6 +76,21 @@ export const usePlayerStore = create<PlayerState>((set) => ({
     if (!prev) return { isPlaying: false };
     return { currentTrack: prev, queue: state.queue.slice(0, -1) };
   }),
+  toggleLoop: () => set((state) => ({ isLooping: !state.isLooping })),
+  toggleShuffle: () => set((state) => {
+    const newShuffled = !state.isShuffled;
+    if (newShuffled && state.queue.length > 0) {
+      const shuffled = [...state.queue];
+      for (let i = shuffled.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+      }
+      return { isShuffled: true, queue: shuffled };
+    }
+    return { isShuffled: newShuffled };
+  }),
+  setZoom: (isZoomed) => set({ isZoomed }),
+  toggleZoom: () => set((state) => ({ isZoomed: !state.isZoomed })),
   fetchRelatedYouTubeTrack: async (videoId: string) => {
     try {
       const res = await fetch(`/api/youtube/related?videoId=${videoId}`);

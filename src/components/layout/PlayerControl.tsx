@@ -1,11 +1,12 @@
 "use client";
 
+import { useState } from "react";
 import { Shuffle, SkipBack, Play, Pause, SkipForward, Repeat, MessageSquare, Volume2, ListMusic, Heart } from "lucide-react";
 import { cn } from "@/utils/cn";
 import { usePlayerStore } from "@/store/usePlayerStore";
 
 // Component Slider tái sử dụng
-function Slider({ value, max, onChange, className }: { value: number; max: number; onChange?: (val: number) => void; className?: string }) {
+function Slider({ value, max, onChange, className, onDragStart, onDragEnd }: { value: number; max: number; onChange?: (val: number) => void; className?: string; onDragStart?: () => void; onDragEnd?: () => void; }) {
     return (
         <div className={cn("relative h-1.5 w-full bg-zinc-200 rounded-full group", className)}>
             <div
@@ -19,6 +20,9 @@ function Slider({ value, max, onChange, className }: { value: number; max: numbe
                     max={max || 100}
                     value={value || 0}
                     onChange={(e) => onChange(Number(e.target.value))}
+                    onPointerDown={onDragStart}
+                    onPointerUp={onDragEnd}
+                    onPointerCancel={onDragEnd}
                     className="absolute inset-0 w-full h-full opacity-0 cursor-pointer m-0 p-0"
                 />
             )}
@@ -27,7 +31,8 @@ function Slider({ value, max, onChange, className }: { value: number; max: numbe
 }
 
 export function PlayerControl() {
-    const { currentTrack, isPlaying, volume, duration, currentTime, setPlaying, setVolume, setProgress } = usePlayerStore();
+    const { currentTrack, isPlaying, volume, duration, currentTime, setPlaying, setVolume, setProgress, isLooping, toggleLoop, isShuffled, toggleShuffle, nextTrack, prevTrack, setZoom, isZoomed } = usePlayerStore();
+    const [isDraggingVolume, setIsDraggingVolume] = useState(false);
 
     const formatTime = (seconds: number) => {
         if (!seconds || isNaN(seconds)) return "0:00";
@@ -38,40 +43,51 @@ export function PlayerControl() {
 
     return (
         <div className={cn(
-            "fixed z-50 transition-all duration-300 flex items-center justify-between",
-            "bottom-14 left-2 right-2 h-14 bg-white rounded-xl px-4 shadow-xl border border-zinc-100",
-            "md:bottom-0 md:left-0 md:right-0 md:h-[90px] md:rounded-none md:border-x-0 md:border-b-0 md:px-8 md:shadow-[0_-4px_20px_rgba(0,0,0,0.03)]"
+            "fixed z-110 transition-all duration-300 flex items-center justify-between",
+            "bottom-14 h-14 rounded-xl px-4 shadow-xl border bg-white/90 backdrop-blur-2xl border-zinc-200 text-zinc-900",
+            "md:bottom-0 md:h-[90px] md:rounded-none md:border-x-0 md:border-b-0 md:px-8",
+            isZoomed
+                ? "left-[320px] right-[350px]"
+                : "left-2 right-2 md:left-0 md:right-0 md:shadow-[0_-4px_20px_rgba(0,0,0,0.03)]"
         )}>
-
-            <div className="flex items-center gap-3 md:gap-4 md:w-[30%] md:min-w-[250px]">
-                <img
-                    src={currentTrack?.thumbnail || "/sun.jpg"}
-                    alt="Album art"
-                    className="rounded-md md:rounded-[14px] w-10 h-10 md:w-14 md:h-14 object-cover shadow-sm"
-                />
-                <div className="flex flex-col">
-                    <h3 className="text-sm font-bold text-zinc-900 line-clamp-1">{currentTrack?.title || "No Title"}</h3>
-                    <p className="text-[10px] md:text-xs text-zinc-500 line-clamp-1">{currentTrack?.artist || "Unknown Artist"}</p>
-                </div>
-                <button className="hidden md:block ml-4 text-[#7000FF] hover:scale-110 transition-transform">
-                    <Heart size={18} fill="currentColor" />
-                </button>
-            </div>
-
+            {
+                !isZoomed && (
+                    <div
+                        className={cn(
+                            "flex items-center gap-3 md:gap-4 md:w-[30%] md:min-w-[250px] p-2 rounded-xl transition-colors",
+                            !isZoomed && "cursor-pointer"
+                        )}
+                        onClick={() => setZoom(true)}
+                    >
+                        <img
+                            src={currentTrack?.thumbnail || "/sun.jpg"}
+                            alt="Album art"
+                            className="rounded-md md:rounded-[14px] w-10 h-10 md:w-14 md:h-14 object-cover shadow-sm"
+                        />
+                        <div className="flex flex-col">
+                            <h3 className={cn("text-sm font-bold line-clamp-1 text-zinc-900")}>{currentTrack?.title || "No Title"}</h3>
+                            <p className={cn("text-[10px] md:text-xs line-clamp-1 text-zinc-500")}>{currentTrack?.artist || "Unknown Artist"}</p>
+                        </div>
+                        <button className="hidden md:block ml-4 text-[#7000FF] hover:scale-110 transition-transform">
+                            <Heart size={18} fill="currentColor" />
+                        </button>
+                    </div>
+                )
+            }
             <div className="hidden md:flex flex-1 max-w-2xl flex-col items-center gap-2">
                 <div className="flex items-center gap-6">
-                    <button className="text-zinc-400 hover:text-[#7000FF] transition"><Shuffle size={18} /></button>
-                    <button className="text-zinc-600 hover:text-[#7000FF] transition"><SkipBack size={20} fill="currentColor" /></button>
+                    <button onClick={toggleShuffle} title="Trộn danh sách phát" className={cn("transition hover:scale-105 hover:cursor-pointer", isShuffled ? "text-[#7000FF]" : "text-zinc-400 hover:text-[#7000FF]")}><Shuffle size={18} /></button>
+                    <button onClick={prevTrack} className={cn("transition hover:scale-105 hover:cursor-pointer", "text-zinc-600 hover:text-[#7000FF]")}><SkipBack size={20} fill="currentColor" /></button>
 
                     <button
                         onClick={() => setPlaying(!isPlaying)}
-                        className="w-10 h-10 md:w-11 md:h-11 flex items-center justify-center bg-[#7000FF] text-white rounded-full hover:scale-105 transition-transform shadow-[0_4px_14px_rgba(112,0,255,0.4)]"
+                        className="w-10 h-10 md:w-11 md:h-11 flex items-center justify-center bg-[#7000FF] text-white rounded-full hover:scale-105 transition-transform shadow-[0_4px_14px_rgba(112,0,255,0.4)] hover:cursor-pointer"
                     >
                         {isPlaying ? <Pause size={20} fill="currentColor" /> : <Play size={20} fill="currentColor" className="ml-1" />}
                     </button>
 
-                    <button className="text-zinc-600 hover:text-[#7000FF] transition"><SkipForward size={20} fill="currentColor" /></button>
-                    <button className="text-zinc-400 hover:text-[#7000FF] transition"><Repeat size={18} /></button>
+                    <button onClick={nextTrack} className={cn("transition hover:scale-105 hover:cursor-pointer", "text-zinc-600 hover:text-[#7000FF]")}><SkipForward size={20} fill="currentColor" /></button>
+                    <button onClick={toggleLoop} title={isLooping ? "Tắt lặp" : "Bật lặp"} className={cn("transition hover:scale-105 hover:cursor-pointer", isLooping ? "text-[#7000FF]" : "text-zinc-400 hover:text-[#7000FF]")}><Repeat size={18} /></button>
                 </div>
 
                 <div className="flex items-center gap-3 w-full text-[10px] font-bold text-zinc-500 tabular-nums">
@@ -91,20 +107,38 @@ export function PlayerControl() {
 
             <div className="hidden md:flex w-[30%] min-w-[250px] justify-end items-center gap-6">
 
-                <div className="flex items-center gap-5">
-                    <button className="flex flex-col items-center gap-1 text-[#7000FF]">
+                <div className="flex items-center gap-2 w-40 md:w-52 pl-6 shrink-0 relative">
+                    <Volume2 size={18} className="text-zinc-500" />
+                    <div className="relative w-full flex items-center">
+                        <Slider
+                            value={volume}
+                            max={100}
+                            onChange={setVolume}
+                            onDragStart={() => setIsDraggingVolume(true)}
+                            onDragEnd={() => setIsDraggingVolume(false)}
+                            className="h-1"
+                        />
+                        {/* Popup hiển thị % volume */}
+                        <div
+                            className={cn(
+                                "absolute -top-10 left-1/2 -translate-x-1/2 bg-zinc-800 text-white text-[10px] font-bold px-2 py-1 rounded shadow-md pointer-events-none transition-all duration-200",
+                                isDraggingVolume ? "opacity-100 scale-100 translate-y-0" : "opacity-0 scale-95 translate-y-2"
+                            )}
+                        >
+                            {Math.round(volume)}%
+                            <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-2 h-2 bg-zinc-800 rotate-45"></div>
+                        </div>
+                    </div>
+                </div>
+                <div className="flex items-center gap-5 border-l border-zinc-200 pl-6">
+                    <button className="flex flex-col items-center gap-1 text-zinc-400 hover:text-[#7000FF] transition hover:cursor-pointer">
+                        <ListMusic size={18} />
+                        <span className="text-[8px] font-bold uppercase tracking-wider">Playlists</span>
+                    </button>
+                    <button className="flex flex-col items-center gap-1 text-zinc-400 hover:text-[#7000FF] transition hover:cursor-pointer">
                         <MessageSquare size={18} fill="currentColor" />
                         <span className="text-[8px] font-bold uppercase tracking-wider">Chat</span>
                     </button>
-                    <button className="flex flex-col items-center gap-1 text-zinc-400 hover:text-[#7000FF] transition">
-                        <ListMusic size={18} />
-                        <span className="text-[8px] font-bold uppercase tracking-wider">Lyrics</span>
-                    </button>
-                </div>
-
-                <div className="flex items-center gap-2 w-28 border-l border-zinc-200 pl-6 shrink-0">
-                    <Volume2 size={18} className="text-zinc-500" />
-                    <Slider value={volume} max={100} onChange={setVolume} className="h-1" />
                 </div>
             </div>
 

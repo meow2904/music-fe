@@ -15,9 +15,11 @@ interface SearchHistoryItem {
 
 export function SearchInput({ containerClassName, className, ...props }: any) {
     const [query, setQuery] = useState("");
-    const debouncedSearch = useDebounce(query, 300);
+    const debouncedSearch = useDebounce(query, 200);
     const [isFocused, setIsFocused] = useState(false);
     const [isMobileOpen, setIsMobileOpen] = useState(false);
+    const [selectedIndex, setSelectedIndex] = useState(-1);
+
 
     const containerRef = useRef<HTMLDivElement>(null);
     const inputRef = useRef<HTMLInputElement>(null);
@@ -40,6 +42,10 @@ export function SearchInput({ containerClassName, className, ...props }: any) {
     }, []);
 
     const { data: history = [], mutate: mutateHistory } = useSWR<SearchHistoryItem[]>("search_history", null, { fallbackData: [] });
+
+    useEffect(() => {
+        setSelectedIndex(-1);
+    }, [query, suggestions, history]);
 
     const addToHistory = (text: string) => {
         const trimmed = text.trim();
@@ -83,6 +89,34 @@ export function SearchInput({ containerClassName, className, ...props }: any) {
     const showHistory = isFocused && query.length === 0 && history.length > 0;
     const showDropdown = showSuggestions || showHistory;
 
+    const handleKeyDown = (e: React.KeyboardEvent) => {
+        if (!showDropdown) return;
+
+        const items = showSuggestions ? suggestions : history;
+        if (!items || items.length === 0) return;
+
+        if (e.key === "ArrowDown") {
+            e.preventDefault();
+            setSelectedIndex((prev) => (prev < items.length - 1 ? prev + 1 : prev));
+        } else if (e.key === "ArrowUp") {
+            e.preventDefault();
+            setSelectedIndex((prev) => (prev > 0 ? prev - 1 : -1));
+        } else if (e.key === "Enter") {
+            if (selectedIndex >= 0 && selectedIndex < items.length) {
+                e.preventDefault();
+                const item = items[selectedIndex];
+                if (showSuggestions) {
+                    handleSelectTrack(item);
+                } else {
+                    setQuery(item.text);
+                    addToHistory(item.text);
+                    setIsFocused(false);
+                    router.push(`/search?q=${encodeURIComponent(item.text)}`);
+                }
+            }
+        }
+    };
+
     useEffect(() => {
         if (suggestions && suggestions.length > 0) {
             console.log("--- Danh sách Suggestion mới ---");
@@ -121,6 +155,7 @@ export function SearchInput({ containerClassName, className, ...props }: any) {
                                 value={query}
                                 onChange={(e) => setQuery(e.target.value)}
                                 onFocus={() => setIsFocused(true)}
+                                onKeyDown={handleKeyDown}
                                 placeholder="Tìm bài hát, nghệ sĩ..."
                                 className="w-full h-11 pl-12 pr-10 bg-transparent text-sm outline-none"
                             />
@@ -146,14 +181,17 @@ export function SearchInput({ containerClassName, className, ...props }: any) {
                                 {showSuggestions && (
                                     <div className="py-2">
                                         <p className="px-4 py-1 text-[10px] font-bold text-zinc-400 uppercase tracking-widest">Gợi ý kết quả</p>
-                                        {suggestions.map((track: any) => (
+                                        {suggestions.map((track: any, index: number) => (
                                             <div
                                                 key={track.id}
                                                 onClick={() => handleSelectTrack(track)}
-                                                className="flex items-center gap-3 px-4 py-2 hover:bg-zinc-100 cursor-pointer transition-colors group"
+                                                className={cn(
+                                                    "flex items-center gap-3 px-4 py-2 cursor-pointer transition-colors group",
+                                                    selectedIndex === index ? "bg-zinc-100" : "hover:bg-zinc-100"
+                                                )}
                                             >
-                                                <Search size={16} className="text-zinc-400 group-hover:text-purple-500 transition-colors shrink-0" />
-                                                <span className="text-sm font-medium text-zinc-700 group-hover:text-zinc-900 truncate">{track.title}</span>
+                                                <Search size={16} className={cn("shrink-0 transition-colors", selectedIndex === index ? "text-purple-500" : "text-zinc-400 group-hover:text-purple-500")} />
+                                                <span className={cn("text-sm font-medium truncate", selectedIndex === index ? "text-zinc-900" : "text-zinc-700 group-hover:text-zinc-900")}>{track.title}</span>
                                             </div>
                                         ))}
                                     </div>
@@ -163,8 +201,11 @@ export function SearchInput({ containerClassName, className, ...props }: any) {
                                 {showHistory && (
                                     <div className="py-2">
                                         <p className="px-4 py-1 text-[10px] font-bold text-zinc-400 uppercase tracking-widest">Tìm kiếm gần đây</p>
-                                        {history.map((item) => (
-                                            <div key={item.id} className="flex items-center justify-between px-4 py-2 hover:bg-zinc-100 cursor-pointer group">
+                                        {history.map((item, index) => (
+                                            <div key={item.id} className={cn(
+                                                "flex items-center justify-between px-4 py-2 cursor-pointer group",
+                                                selectedIndex === index ? "bg-zinc-100" : "hover:bg-zinc-100"
+                                            )}>
                                                 <div className="flex items-center gap-3 flex-1" onClick={() => { setQuery(item.text); addToHistory(item.text); router.push(`/search?q=${encodeURIComponent(item.text)}`); }}>
                                                     <History size={16} className="text-zinc-400" />
                                                     <span className="text-sm text-zinc-600">{item.text}</span>

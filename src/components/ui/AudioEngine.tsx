@@ -3,11 +3,12 @@ import YouTube from 'react-youtube';
 import { usePlayerStore } from '@/store/usePlayerStore';
 import { useEffect, useRef } from 'react';
 
-const YOUTUBE_OPTS = { height: '0', width: '0', playerVars: { autoplay: 0, controls: 0 } };
+const YOUTUBE_OPTS = { height: '100%', width: '100%', playerVars: { autoplay: 1, controls: 0, disablekb: 1, modestbranding: 1, vq: 'hd1080' } };
 
-export const AudioEngine = () => {
+export const AudioEngine = ({ className }: { className?: string }) => {
     const currentTrack = usePlayerStore(state => state.currentTrack);
     const isPlaying = usePlayerStore(state => state.isPlaying);
+    const isLooping = usePlayerStore(state => state.isLooping);
     const volume = usePlayerStore(state => state.volume);
     const setPlaying = usePlayerStore(state => state.setPlaying);
     const setProgress = usePlayerStore(state => state.setProgress);
@@ -45,12 +46,20 @@ export const AudioEngine = () => {
     const onReady = (event: any) => {
         playerRef.current = event.target;
         playerRef.current.setVolume(volume);
+        playerRef.current.setPlaybackQuality('hd1080');
         if (isPlaying) playerRef.current.playVideo();
     };
 
     const onStateChange = async (event: any) => {
-        // 1: Playing, 2: Paused, 0: Ended, 3: Buffering
-        if (event.data === 1) {
+        // -1: Unstarted, 5: Cued, 1: Playing, 2: Paused, 0: Ended, 3: Buffering
+        if (event.data === -1 || event.data === 5) {
+            if (isPlaying) {
+                event.target.playVideo();
+            } else {
+                event.target.pauseVideo();
+            }
+        } else if (event.data === 1) {
+            event.target.setPlaybackQuality('hd1080');
             setPlaying(true);
             if (intervalRef.current) clearInterval(intervalRef.current);
             intervalRef.current = setInterval(() => {
@@ -66,7 +75,9 @@ export const AudioEngine = () => {
             }
         } else if (event.data === 0) {
             // event.data === 0 là trạng thái bài hát kết thúc (Ended)
-            if (event.data === 0) {
+            if (isLooping) {
+                event.target.playVideo(); // Lặp lại bài hát hiện tại
+            } else {
                 if (queue.length > 0 && queue.length > index) {
                     playNext(); // Phát bài tiếp theo có sẵn trong danh sách
                 } else if (isAutoplay && currentTrack) {
@@ -90,12 +101,14 @@ export const AudioEngine = () => {
     if (!currentTrack?.id) return null;
 
     return (
-        <div className="hidden pointer-events-none overflow-hidden absolute w-0 h-0">
+        <div className={className || "hidden pointer-events-none overflow-hidden absolute w-0 h-0"}>
             <YouTube
                 videoId={currentTrack.id}
                 opts={YOUTUBE_OPTS}
                 onReady={onReady}
                 onStateChange={onStateChange}
+                className="w-full h-full object-cover"
+                iframeClassName="w-full h-full rounded-2xl pointer-events-none"
             />
         </div>
     );

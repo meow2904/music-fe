@@ -5,6 +5,7 @@ import { Play, Mic2, Clock3, Loader2, Heart, Plus, Share2 } from "lucide-react";
 import { usePlayerStore } from "@/store/usePlayerStore";
 import { useState, useRef, useEffect } from "react";
 import { cn } from "@/utils/cn";
+import toast from "react-hot-toast";
 
 // Hàm fetcher cơ bản cho SWR
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
@@ -23,7 +24,7 @@ const getKey = (pageIndex: number, previousPageData: any, query: string) => {
 };
 
 export function VideoGridList({ query }: { query: string }) {
-    const { currentTrack, isPlaying } = usePlayerStore();
+    const { currentTrack, isPlaying, setCurrentTrack, addToQueue } = usePlayerStore();
     const [hoveredId, setHoveredId] = useState<string | null>(null);
     const observerTarget = useRef<HTMLDivElement>(null);
 
@@ -62,7 +63,17 @@ export function VideoGridList({ query }: { query: string }) {
 
     // Xử lý khi nhấn vào một bài hát
     const handlePlay = (track: any) => {
-        // TODO: Xử lý logic phát nhạc
+        const videoId = track.id?.videoId || track.id;
+        const title = track.snippet?.title;
+        const artist = track.snippet?.channelTitle;
+        const thumbnail = track.snippet?.thumbnails?.high?.url || track.snippet?.thumbnails?.default?.url;
+
+        setCurrentTrack({
+            id: videoId,
+            title,
+            artist,
+            thumbnail,
+        });
     };
 
     // Hiển thị khi chưa search gì
@@ -120,7 +131,7 @@ export function VideoGridList({ query }: { query: string }) {
                                         className="w-14 h-14 bg-purple-600 rounded-full flex items-center justify-center text-white scale-90 group-hover:scale-100 transition-transform shadow-xl"
                                     >
                                         {isCurrent && isPlaying ? (
-                                            <div className="flex gap-1 items-end h-5">
+                                            <div className="flex gap-1 items-end h-5 h">
                                                 <div className="w-1 h-3 bg-white animate-bounce [animation-delay:-0.3s]"></div>
                                                 <div className="w-1 h-5 bg-white animate-bounce [animation-delay:-0.15s]"></div>
                                                 <div className="w-1 h-4 bg-white animate-bounce"></div>
@@ -156,9 +167,20 @@ export function VideoGridList({ query }: { query: string }) {
                                             <Heart size={14} />
                                         </button>
                                         <button
-                                            onClick={(e) => { e.stopPropagation(); /* TODO: Add to Playlist logic */ }}
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                const videoId = track.id?.videoId || track.id;
+                                                const title = track.snippet?.title;
+                                                addToQueue([{
+                                                    id: videoId,
+                                                    title: title,
+                                                    artist: track.snippet?.channelTitle,
+                                                    thumbnail: track.snippet?.thumbnails?.high?.url || track.snippet?.thumbnails?.default?.url,
+                                                }]);
+                                                toast.success(`Đã thêm "${title}" vào danh sách phát`);
+                                            }}
                                             className="p-1.5 text-zinc-400 hover:text-purple-600 hover:bg-purple-50 rounded-full transition-colors"
-                                            title="Thêm vào danh sách phát"
+                                            title="Thêm vào danh sách chờ"
                                         >
                                             <Plus size={16} />
                                         </button>

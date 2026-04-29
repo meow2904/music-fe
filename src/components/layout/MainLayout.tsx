@@ -3,8 +3,8 @@ import React, { useState, useEffect } from "react";
 import { Navbar } from "./Navbar";
 import { PlayerControl } from "./PlayerControl";
 import { BottomNav } from "./BottomNav";
-import { AudioEngine } from "../ui/AudioEngine";
 import { usePlayerStore } from "@/store/usePlayerStore";
+import MusicZoom from "@/components/pages/room/music-zoom";
 
 export default function MainLayout({ children }: { children: React.ReactNode }) {
     const [mounted, setMounted] = useState(false);
@@ -34,11 +34,11 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
                     {children}
                 </main>
             </div>
+            <MusicZoom />
             <PlayerControl />
             <div className="block md:hidden z-50">
                 <BottomNav />
             </div>
-            <AudioEngine />
         </div>
     );
 }
