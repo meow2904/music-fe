@@ -3,17 +3,6 @@ import { Music, Search, Zap, Clock, Plus } from "lucide-react";
 import { RoomGrid } from "./room-grid";
 import { CreateRoomModal } from "./create-zoom";
 
-const mockRoomsData = [
-    { id: 1, roomName: 'Học bài cùng mình - Lofi Study', isStreaming: true, listenerCount: 15, songCount: 42, tags: ['Focus'] },
-    { id: 2, roomName: 'Cafe Sáng Đà Lạt', isStreaming: true, listenerCount: 8, songCount: 20, tags: ['Chill'] },
-    { id: 3, roomName: 'K-Pop Greatest Hits 2024', isStreaming: true, listenerCount: 120, songCount: 150, tags: ['Popular', 'K-Pop'] },
-    { id: 4, roomName: 'K-Pop Greatest Hits 2024', isStreaming: true, listenerCount: 120, songCount: 150, tags: ['Popular', 'K-Pop'] },
-    { id: 5, roomName: 'K-Pop Greatest Hits 2024', isStreaming: true, listenerCount: 120, songCount: 150, tags: ['Popular', 'K-Pop'] },
-    { id: 6, roomName: 'K-Pop Greatest Hits 2024', isStreaming: true, listenerCount: 120, songCount: 150, tags: ['Popular', 'K-Pop'] },
-    { id: 7, roomName: 'K-Pop Greatest Hits 2024', isStreaming: true, listenerCount: 120, songCount: 150, tags: ['Popular', 'K-Pop'] },
-    { id: 8, roomName: 'K-Pop Greatest Hits 2024', isStreaming: true, listenerCount: 120, songCount: 150, tags: ['Popular', 'K-Pop'] },
-];
-
 export default function RoomPage() {
     return (
         <div className="min-h-screen bg-linear-to-b from-violet-300/10 via-violet-100 to-blue-100 text-zinc-900 rounded-xl">
@@ -53,7 +42,7 @@ export default function RoomPage() {
                         </div>
                     </div>
                 </div>
-                <RoomGrid rooms={mockRoomsData} />
+                <RoomGrid />
             </div>
         </div>
     );

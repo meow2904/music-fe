@@ -45,7 +45,6 @@ export function AuthModal({ isOpen, onOpenChange }: { isOpen: boolean, onOpenCha
             const email = formData.get('email') as string;
 
             const { error } = await supabase.auth.resetPasswordForEmail(email, {
-                // redirectTo: `${window.location.origin}/update-password`,
                 redirectTo: `${window.location.origin}/auth/callback?next=/update-password`,
             });
 

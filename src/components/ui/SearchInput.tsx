@@ -142,7 +142,7 @@ export function SearchInput({ containerClassName, className, ...props }: any) {
                         {showDropdown && (
                             <div className="absolute top-full left-0 right-0 bg-white rounded-b-2xl shadow-2xl border border-t-0 border-zinc-200 z-50 max-h-[400px] overflow-y-auto">
 
-                                {/* HIỂN THỊ GỢI Ý KÈM THUMBNAIL */}
+                                {/* HIỂN THỊ GỢI Ý TỪ KHÓA */}
                                 {showSuggestions && (
                                     <div className="py-2">
                                         <p className="px-4 py-1 text-[10px] font-bold text-zinc-400 uppercase tracking-widest">Gợi ý kết quả</p>
@@ -152,16 +152,8 @@ export function SearchInput({ containerClassName, className, ...props }: any) {
                                                 onClick={() => handleSelectTrack(track)}
                                                 className="flex items-center gap-3 px-4 py-2 hover:bg-zinc-100 cursor-pointer transition-colors group"
                                             >
-                                                <div className="relative w-10 h-10 shrink-0">
-                                                    <img src={track.thumbnail} alt="" className="w-full h-full object-cover rounded-md" />
-                                                    <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 flex items-center justify-center rounded-md transition-opacity">
-                                                        <Music2 size={14} className="text-white" />
-                                                    </div>
-                                                </div>
-                                                <div className="flex flex-col overflow-hidden">
-                                                    <span className="text-sm font-medium truncate">{track.title}</span>
-                                                    <span className="text-xs text-zinc-500 truncate">{track.artist}</span>
-                                                </div>
+                                                <Search size={16} className="text-zinc-400 group-hover:text-purple-500 transition-colors shrink-0" />
+                                                <span className="text-sm font-medium text-zinc-700 group-hover:text-zinc-900 truncate">{track.title}</span>
                                             </div>
                                         ))}
                                     </div>

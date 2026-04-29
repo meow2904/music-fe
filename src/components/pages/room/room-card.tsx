@@ -61,7 +61,7 @@ export function RoomCard({ roomName, isStreaming, listenerCount, songCount, tags
                 </div>
 
                 {/* Tags */}
-                {tags && tags.length > 0 && (
+                {/* {tags && tags.length > 0 && (
                     <div className="flex flex-col gap-1.5 items-end shrink-0">
                         {tags.map(tag => (
                             <span key={tag} className="text-xs font-medium px-2.5 py-1 rounded-full bg-zinc-100 text-zinc-800 border border-zinc-200">
@@ -69,7 +69,7 @@ export function RoomCard({ roomName, isStreaming, listenerCount, songCount, tags
                             </span>
                         ))}
                     </div>
-                )}
+                )} */}
             </div>
 
             {/* Middle Section (Info & Avatars) */}
@@ -88,7 +88,7 @@ export function RoomCard({ roomName, isStreaming, listenerCount, songCount, tags
 
             {/* Bottom Section (Action) */}
             <div className="flex justify-between items-center pt-3 text-zinc-600 group-hover:text-emerald-600 transition-colors">
-                <span className="font-medium text-sm">Nghe cùng</span>
+                <span className="font-medium text-sm hover:cursor-pointer">Nghe cùng</span>
                 <ArrowRight className="w-5 h-5 hover:cursor-pointer hover:translate-x-1 transition-all" />
             </div>
         </div>
