@@ -15,7 +15,8 @@ export default function MusicZoom() {
         isPlaying, setPlaying,
         nextTrack, prevTrack,
         volume, setVolume,
-        duration, currentTime, setProgress, setSeekTo
+        duration, currentTime, setProgress, setSeekTo,
+        activeZoomTab
     } = usePlayerStore();
 
     // Xử lý vuốt/cuộn xuống để thu nhỏ (minimize)
@@ -57,7 +58,7 @@ export default function MusicZoom() {
     return (
         <div
             className={cn(
-                "fixed inset-0 z-100 flex h-screen w-full bg-zinc-50 text-zinc-800 overflow-hidden font-sans transition-transform duration-500 ease-in-out",
+                "fixed inset-0 z-100 flex flex-col lg:flex-row h-screen w-full bg-zinc-50 text-zinc-800 overflow-hidden font-sans transition-transform duration-500 ease-in-out",
                 isZoomed ? "translate-y-0" : "translate-y-full"
             )}
             onTouchStart={handleTouchStart}
@@ -66,7 +67,12 @@ export default function MusicZoom() {
         >
 
             {/* ================= COLUMN 1: LEFT (QUEUE) ================= */}
-            <div className="w-[320px] flex flex-col border-r border-zinc-200 bg-white">
+            <div className={cn(
+                "flex-col border-zinc-200 bg-white",
+                "lg:flex lg:w-[320px] lg:border-r lg:h-full lg:order-1 lg:pb-[90px]",
+                "w-full order-2 flex-1 border-t lg:border-t-0 overflow-hidden pb-14 md:pb-[90px]",
+                activeZoomTab === 'playlist' ? "flex" : "hidden lg:flex"
+            )}>
                 {/* Header Queue */}
                 <div className="p-5 border-b border-zinc-200">
                     <h2 className="text-lg font-bold text-zinc-900 flex items-center gap-2">
@@ -97,7 +103,11 @@ export default function MusicZoom() {
 
 
             {/* ================= COLUMN 2: CENTER (MAIN PLAYER) ================= */}
-            <div className="flex-1 flex flex-col relative bg-linear-to-b from-indigo-50 to-zinc-50 pb-14 md:pb-[90px]">
+            <div className={cn(
+                "flex flex-col relative bg-linear-to-b from-indigo-50 to-zinc-50 shrink-0 overflow-hidden",
+                "lg:flex-1 lg:h-full lg:order-2 lg:shrink lg:pb-[90px]",
+                "w-full h-[50vh] lg:h-auto order-1 pb-4"
+            )}>
 
                 {/* Top Bar (Tên phòng) */}
                 <div className="absolute top-0 w-full p-4 md:p-6 flex justify-between items-center z-20">
@@ -120,8 +130,8 @@ export default function MusicZoom() {
                 </div>
 
                 {/* Main Visualizer / Video */}
-                <div className="flex-1 flex items-center justify-center px-4 md:px-8 pb-4 pt-24 overflow-hidden">
-                    <div className="relative group w-full max-w-6xl aspect-video">
+                <div className="flex-1 flex items-center justify-center px-4 md:px-8 pb-0 lg:pb-4 pt-20 overflow-hidden">
+                    <div className="relative group w-full max-w-6xl aspect-video md:max-h-full">
                         {/* Hiệu ứng Glow mờ phía sau */}
                         <div className="absolute -inset-10 bg-indigo-400/20 blur-3xl rounded-[3rem] opacity-70 animate-pulse pointer-events-none"></div>
 
@@ -161,7 +171,12 @@ export default function MusicZoom() {
 
 
             {/* ================= COLUMN 3: RIGHT (SOCIAL / CHAT) ================= */}
-            <div className="w-[350px] flex flex-col border-l border-zinc-200 bg-white">
+            <div className={cn(
+                "flex-col border-zinc-200 bg-white",
+                "lg:flex lg:w-[350px] lg:border-l lg:h-full lg:order-3 lg:pb-[90px]",
+                "w-full order-3 flex-1 border-t lg:border-t-0 overflow-hidden pb-14 md:pb-[90px]",
+                activeZoomTab === 'chat' ? "flex" : "hidden lg:flex"
+            )}>
 
                 {/* Danh sách thành viên */}
                 <div className="p-5 border-b border-zinc-200">

@@ -21,6 +21,7 @@ interface PlayerState {
   isLooping: boolean;  // Trạng thái lặp bài hiện tại
   isShuffled: boolean; // Trạng thái trộn bài
   isZoomed: boolean;   // Trạng thái hiển thị giao diện Music Zoom
+  activeZoomTab: 'playlist' | 'chat'; // Tab hiện tại trên Music Zoom bản mobile
 
   mode: 'private' | 'room';
   roomId: string | null;
@@ -41,6 +42,7 @@ interface PlayerState {
   toggleShuffle: () => void;
   setZoom: (isZoomed: boolean) => void;
   toggleZoom: () => void;
+  setActiveZoomTab: (tab: 'playlist' | 'chat') => void;
 }
 
 export const usePlayerStore = create<PlayerState>((set) => ({
@@ -56,6 +58,7 @@ export const usePlayerStore = create<PlayerState>((set) => ({
   isLooping: false,
   isShuffled: false,
   isZoomed: false,
+  activeZoomTab: 'playlist',
 
   mode: 'private',
   roomId: null,
@@ -91,6 +94,7 @@ export const usePlayerStore = create<PlayerState>((set) => ({
   }),
   setZoom: (isZoomed) => set({ isZoomed }),
   toggleZoom: () => set((state) => ({ isZoomed: !state.isZoomed })),
+  setActiveZoomTab: (activeZoomTab) => set({ activeZoomTab }),
   fetchRelatedYouTubeTrack: async (videoId: string) => {
     try {
       const res = await fetch(`/api/youtube/related?videoId=${videoId}`);

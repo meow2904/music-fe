@@ -35,7 +35,11 @@ export function ModalCustom({
             <Modal.Backdrop>
                 <Modal.Container>
                     <Modal.Dialog className="sm:max-w-[450px]">
-                        <Modal.CloseTrigger />
+                        <Modal.CloseTrigger className="absolute top-3 right-3">
+                            <button aria-label="Close" className="p-1 rounded-full hover:bg-zinc-100 transition-colors text-zinc-500 hover:text-zinc-700">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 6 6 18" /><path d="m6 6 12 12" /></svg>
+                            </button>
+                        </Modal.CloseTrigger>
 
                         <Modal.Header>
                             <Modal.Heading>{title}</Modal.Heading>

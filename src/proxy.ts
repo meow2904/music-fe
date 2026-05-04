@@ -1,7 +1,7 @@
 import { updateSession } from '@/utils/supabase/middleware'
 import { NextRequest, NextResponse } from 'next/server'
 
-export async function middleware(request: NextRequest) {
+export default async function proxy(request: NextRequest) {
 
 
     // 1. Lấy thông tin session từ Supabase Middleware

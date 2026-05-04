@@ -31,7 +31,7 @@ function Slider({ value, max, onChange, className, onDragStart, onDragEnd }: { v
 }
 
 export function PlayerControl() {
-    const { currentTrack, isPlaying, volume, duration, currentTime, setPlaying, setVolume, setProgress, isLooping, toggleLoop, isShuffled, toggleShuffle, nextTrack, prevTrack, setZoom, isZoomed } = usePlayerStore();
+    const { currentTrack, isPlaying, volume, duration, currentTime, setPlaying, setVolume, setProgress, isLooping, toggleLoop, isShuffled, toggleShuffle, nextTrack, prevTrack, setZoom, isZoomed, activeZoomTab, setActiveZoomTab } = usePlayerStore();
     const [isDraggingVolume, setIsDraggingVolume] = useState(false);
 
     const formatTime = (seconds: number) => {
@@ -54,7 +54,7 @@ export function PlayerControl() {
                 !isZoomed && (
                     <div
                         className={cn(
-                            "flex items-center gap-3 md:gap-4 md:w-[30%] md:min-w-[250px] p-2 rounded-xl transition-colors",
+                            "flex items-center gap-3 md:gap-4 flex-1 justify-start p-2 rounded-xl transition-colors min-w-0",
                             !isZoomed && "cursor-pointer"
                         )}
                         onClick={() => setZoom(true)}
@@ -74,7 +74,7 @@ export function PlayerControl() {
                     </div>
                 )
             }
-            <div className="hidden md:flex flex-1 max-w-2xl flex-col items-center gap-2">
+            <div className="hidden md:flex flex-col items-center justify-center gap-2 max-w-2xl shrink-0 px-4">
                 <div className="flex items-center gap-6">
                     <button onClick={toggleShuffle} title="Trộn danh sách phát" className={cn("transition hover:scale-105 hover:cursor-pointer", isShuffled ? "text-[#7000FF]" : "text-zinc-400 hover:text-[#7000FF]")}><Shuffle size={18} /></button>
                     <button onClick={prevTrack} className={cn("transition hover:scale-105 hover:cursor-pointer", "text-zinc-600 hover:text-[#7000FF]")}><SkipBack size={20} fill="currentColor" /></button>
@@ -105,9 +105,8 @@ export function PlayerControl() {
                 </div>
             </div>
 
-            <div className="hidden md:flex w-[30%] min-w-[250px] justify-end items-center gap-6">
-
-                <div className="flex items-center gap-2 w-40 md:w-52 pl-6 shrink-0 relative">
+            <div className="hidden md:flex flex-1 justify-end items-center gap-4 lg:gap-6 min-w-0">
+                <div className="flex items-center gap-2 w-48 md:w-48 pl-6 shrink-0 relative">
                     <Volume2 size={18} className="text-zinc-500" />
                     <div className="relative w-full flex items-center">
                         <Slider
@@ -131,12 +130,18 @@ export function PlayerControl() {
                     </div>
                 </div>
                 <div className="flex items-center gap-5 border-l border-zinc-200 pl-6">
-                    <button className="flex flex-col items-center gap-1 text-zinc-400 hover:text-[#7000FF] transition hover:cursor-pointer">
+                    <button
+                        onClick={() => { setActiveZoomTab('playlist'); setZoom(true); }}
+                        className={cn("flex flex-col items-center gap-1 transition hover:cursor-pointer", activeZoomTab === 'playlist' ? "text-[#7000FF]" : "text-zinc-400 hover:text-[#7000FF]")}
+                    >
                         <ListMusic size={18} />
                         <span className="text-[8px] font-bold uppercase tracking-wider">Playlists</span>
                     </button>
-                    <button className="flex flex-col items-center gap-1 text-zinc-400 hover:text-[#7000FF] transition hover:cursor-pointer">
-                        <MessageSquare size={18} fill="currentColor" />
+                    <button
+                        onClick={() => { setActiveZoomTab('chat'); setZoom(true); }}
+                        className={cn("flex flex-col items-center gap-1 transition hover:cursor-pointer", activeZoomTab === 'chat' ? "text-[#7000FF]" : "text-zinc-400 hover:text-[#7000FF]")}
+                    >
+                        <MessageSquare size={18} fill={activeZoomTab === 'chat' ? "currentColor" : "none"} />
                         <span className="text-[8px] font-bold uppercase tracking-wider">Chat</span>
                     </button>
                 </div>
